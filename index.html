@@ -520,6 +520,20 @@ function homeStreak(){
   while(days.has(iso(d))){n++;d.setDate(d.getDate()-1);}
   return n;
 }
+function homeWeekSessions(){
+  const d=new Date();d.setDate(d.getDate()-6);
+  const cutoff=d.toISOString().slice(0,10);
+  return new Set(byType("home").filter(r=>r.date>=cutoff).map(r=>r.date)).size;
+}
+function homeWeekSeries(){
+  const out=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const iso=d.toISOString().slice(0,10);
+    out.push(byType("home").some(r=>r.date===iso)?1:0);
+  }
+  return out;
+}
 function avgHomeAdherence(recs){
   const vals=recs.filter(r=>r.adherence).map(r=>r.adherence);
   return vals.length?+(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):null;
@@ -574,6 +588,8 @@ function renderToday(){
   const np=nextPlanDay();
   const done=planRec().done.length;
   const hs=homeStreak();
+  const weekN=homeWeekSessions();
+  const weekClass=weekN>=5?"tgt-ok":weekN>=3?"tgt-warn":"";
   const divot=latest?homeDivotPct(latest):null;
   const divotClass=divot==null?"":divot>=90?"tgt-ok":divot>=75?"tgt-warn":"tgt-bad";
   const todayHome=hm.find(r=>r.date===today());
@@ -603,6 +619,12 @@ function renderToday(){
       <div class="lbl">Home streak</div>
       <div class="val">${hs}<s>days</s></div>
       <div class="sub">${done}/30 plan days</div>
+    </div>
+    <div class="metric">
+      <div class="lbl">Sessions this week</div>
+      <div class="val ${weekClass}">${weekN}<s>days</s></div>
+      <div class="sub">Target 4\u20135 \u00b7 rolling 7 days</div>
+      ${spark(homeWeekSeries())}
     </div>
   </div>`;
 
