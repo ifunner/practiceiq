@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PracticeIQ</title>
+<meta name="description" content="Pressure left, then swing. Practice, speed, putting and scoring tracker.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0E2A22">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PracticeIQ">
+<link rel="icon" href="practiceiq-logo/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="practiceiq-logo/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="practiceiq-logo/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --felt:#0E2A22; --felt-deep:#0A201A; --ivory:#F2EBDA;
+    --fairway:#46C98A; --fairway-deep:#1F8F5F; --yellow:#F4D03F; --yellow-deep:#D9AE1B;
+    --line:rgba(242,235,218,.10); --line2:rgba(242,235,218,.16); --dim:rgba(242,235,218,.55);
+    --card:#0E2A22; --card2:#10342a; --bad:#E0653F; --ok:var(--fairway);
+    --ui:'Space Grotesk',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    background:var(--felt-deep); color:var(--ivory); font-family:var(--ui);
+    -webkit-font-smoothing:antialiased; line-height:1.45;
+    padding-bottom:calc(76px + env(safe-area-inset-bottom));
+  }
+  .app{max-width:480px;margin:0 auto;min-height:100vh}
+  .wrap{padding:18px 18px 32px}
+  .mono{font-family:var(--mono)}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  h1,h2,h3{margin:0;letter-spacing:-.01em}
+  button{font-family:var(--ui);cursor:pointer;border:none;background:none;color:inherit}
+  a{color:var(--fairway)}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:20;background:linear-gradient(var(--felt-deep),var(--felt-deep) 70%,transparent);
+    padding:calc(14px + env(safe-area-inset-top)) 18px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;align-items:center;gap:9px}
+  .brand svg{width:30px;height:30px;display:block}
+  .brand .wm{font-size:21px;letter-spacing:-.03em;line-height:1}
+  .brand .wm b{font-weight:700;color:var(--fairway);margin-left:-.06em}
+  .brand .wm span{font-weight:500;color:var(--ivory)}
+  .suite{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
+
+  /* Cue banner — the single flag-yellow pop */
+  .cue{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);
+    border-left:3px solid var(--yellow);border-radius:13px;padding:13px 15px;margin-bottom:18px}
+  .cue .dot{width:9px;height:9px;border-radius:50%;background:var(--yellow);flex:none;box-shadow:0 0 0 4px rgba(244,208,63,.14)}
+  .cue b{color:var(--yellow);font-weight:600}
+  .cue small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:1px}
+
+  /* Cards & metrics */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  .metric{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .metric.hero{grid-column:1/3;border-color:var(--line2);background:linear-gradient(150deg,var(--card2),var(--card))}
+  .metric .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+  .metric .val{font-family:var(--mono);font-weight:700;font-size:30px;line-height:1.05;margin-top:7px;display:flex;align-items:baseline;gap:7px}
+  .metric.hero .val{font-size:46px}
+  .metric .val s{text-decoration:none;font-size:13px;color:var(--dim);font-weight:500}
+  .metric .sub{font-size:11.5px;color:var(--dim);margin-top:5px}
+  .spark{margin-top:9px}
+  .tgt-ok{color:var(--fairway)} .tgt-bad{color:var(--bad)} .tgt-warn{color:var(--yellow)}
+
+  /* Lists / rows */
+  .row{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+  .row:first-child{border-top:none}
+  .row .g{flex:1;min-width:0}
+  .row .t{font-weight:500}
+  .row .d{font-size:12px;color:var(--dim);margin-top:2px}
+  .pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:6px;border:1px solid var(--line2);color:var(--dim);white-space:nowrap}
+  .pill.full{background:rgba(70,201,138,.13);border-color:transparent;color:var(--fairway)}
+  .pill.speed{background:rgba(244,208,63,.13);border-color:transparent;color:var(--yellow)}
+  .pill.putt{background:rgba(242,235,218,.08);color:var(--ivory)}
+  .pill.score{background:rgba(224,101,63,.14);border-color:transparent;color:#f0a182}
+
+  /* Section heads */
+  .sect{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--fairway);
+    font-family:var(--mono);margin:26px 2px 12px}
+  .sect:first-child{margin-top:4px}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:12px;
+    background:var(--fairway);color:#06251a;font-weight:700;font-size:15px}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;border:1px solid var(--line2);color:var(--ivory);font-weight:600}
+  .btn.sm{width:auto;padding:9px 14px;font-size:13px;border-radius:10px}
+  .btn.yellow{background:var(--yellow);color:#2a2306}
+  .btn[disabled]{opacity:.45;pointer-events:none}
+
+  /* Segmented control */
+  .seg{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:16px}
+  .seg button{flex:1;padding:9px 4px;border-radius:9px;font-size:13px;font-weight:600;color:var(--dim)}
+  .seg button.on{background:var(--felt-deep);color:var(--ivory);box-shadow:inset 0 0 0 1px var(--line2)}
+
+  /* Forms */
+  label.f{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px}
+  input[type=number],input[type=text],textarea,select{
+    width:100%;background:var(--felt-deep);border:1px solid var(--line2);color:var(--ivory);
+    border-radius:10px;padding:12px;font-family:var(--mono);font-size:15px}
+  textarea{font-family:var(--ui);min-height:64px;resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--fairway)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+  /* Tally tap buttons */
+  .taps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .tap{background:var(--felt-deep);border:1px solid var(--line2);border-radius:12px;padding:14px 10px;text-align:left}
+  .tap .tn{font-family:var(--mono);font-size:26px;font-weight:700;line-height:1}
+  .tap .tl{font-size:12px;color:var(--dim);margin-top:4px}
+  .tap.pure{border-color:rgba(70,201,138,.5)} .tap.pure .tn{color:var(--fairway)}
+  .tap.fat{border-color:rgba(224,101,63,.5)} .tap.fat .tn{color:var(--bad)}
+  .tap:active{transform:scale(.98)}
+  .counter{display:flex;align-items:center;justify-content:space-between;background:var(--felt-deep);
+    border:1px solid var(--line2);border-radius:12px;padding:10px 12px;margin-top:8px}
+  .counter .cc{display:flex;align-items:center;gap:10px}
+  .counter button{width:38px;height:38px;border-radius:9px;background:var(--card);border:1px solid var(--line2);
+    font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .counter .num{font-family:var(--mono);font-size:20px;font-weight:700;min-width:34px;text-align:center}
+
+  /* Checkable steps */
+  .step{display:flex;gap:12px;padding:13px 0;border-top:1px solid var(--line);align-items:flex-start}
+  .step:first-child{border-top:none}
+  .chk{flex:none;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line2);margin-top:1px;
+    display:flex;align-items:center;justify-content:center;transition:.12s}
+  .chk.on{background:var(--fairway);border-color:var(--fairway)}
+  .chk svg{width:14px;height:14px;opacity:0;transition:.12s}.chk.on svg{opacity:1}
+  .step .sg{flex:1}
+  .step .st{font-weight:500}
+  .step.done .st{color:var(--dim);text-decoration:line-through}
+  .step .sd{font-size:12.5px;color:var(--dim);margin-top:3px}
+  .step .sp{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fairway);margin-top:5px}
+  .mins{font-family:var(--mono);font-size:11px;color:var(--dim);flex:none}
+
+  /* Stars */
+  .stars{display:flex;gap:8px;margin-top:6px}
+  .stars button{font-size:26px;color:var(--line2);line-height:1}
+  .stars button.on{color:var(--yellow)}
+
+  /* Plan */
+  .planday{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line);align-items:flex-start}
+  .planday:first-child{border-top:none}
+  .planday .dn{font-family:var(--mono);font-size:11px;color:var(--dim);width:30px;flex:none;padding-top:2px}
+  .planday.done .pt{color:var(--dim);text-decoration:line-through}
+  .planday .pt{font-weight:500;font-size:14.5px}
+  .planday .pd{font-size:12px;color:var(--dim);margin-top:2px}
+  .planday .tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+  .weekhdr{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--yellow);
+    margin:20px 2px 4px;padding-top:14px;border-top:1px solid var(--line)}
+  .weekhdr:first-of-type{border-top:none;padding-top:0}
+
+  /* Checkpoint */
+  .cp{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+  .cp:first-child{border-top:none}
+  .cp .cv{font-family:var(--mono);font-weight:700;font-size:15px;flex:none;min-width:74px;text-align:right}
+  .cp .cg{flex:1}
+  .cp .ct{font-size:13.5px;font-weight:500}
+  .cp .cs{font-size:11.5px;color:var(--dim);margin-top:2px}
+
+  /* Nav */
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(10,32,26,.92);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+  nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--dim);padding:5px 2px}
+  nav button.on{color:var(--ivory)}
+  nav button.on svg{color:var(--fairway)}
+  nav svg{width:22px;height:22px}
+  nav .nl{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em}
+
+  .muted{color:var(--dim)}
+  .small{font-size:12.5px}
+  .empty{text-align:center;color:var(--dim);padding:26px 10px;font-size:13.5px}
+  .toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%);
+    background:var(--fairway);color:#06251a;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:11px;
+    z-index:60;opacity:0;transition:.2s;pointer-events:none;max-width:90%;text-align:center}
+  .toast.show{opacity:1}
+  hr.sep{border:none;border-top:1px solid var(--line);margin:18px 0}
+  .hide{display:none!important}
+  details.ref{border:1px solid var(--line);border-radius:13px;padding:0 16px;margin-bottom:12px;background:var(--card)}
+  details.ref summary{list-style:none;cursor:pointer;padding:15px 0;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  details.ref summary::-webkit-details-marker{display:none}
+  details.ref summary .x{color:var(--dim);font-family:var(--mono);font-size:18px;transition:.2s}
+  details.ref[open] summary .x{transform:rotate(45deg)}
+  details.ref .body{padding-bottom:16px}
+  .ol{counter-reset:s;list-style:none;padding:0;margin:0}
+  .ol li{counter-increment:s;position:relative;padding:9px 0 9px 34px;border-top:1px solid var(--line);font-size:14px}
+  .ol li:first-child{border-top:none}
+  .ol li::before{content:counter(s);position:absolute;left:0;top:9px;font-family:var(--mono);font-weight:700;
+    color:var(--fairway);font-size:13px;width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;
+    display:flex;align-items:center;justify-content:center}
+  .flag{display:flex;gap:11px;padding:12px 0;border-top:1px solid var(--line);align-items:flex-start}
+  .flag:first-child{border-top:none}
+  .flag .fx{flex:none;width:7px;height:7px;border-radius:50%;background:var(--bad);margin-top:7px}
+  .flag .ft{font-weight:500;font-size:14px}
+  .flag .fd{font-size:12.5px;color:var(--dim);margin-top:2px}
+  .flag .fc{font-family:var(--mono);font-size:11px;color:var(--yellow);margin-top:4px}
+
+  @media print{
+    nav,header,.cue .dot,.btn,.seg{display:none!important}
+    body{background:#fff;color:#111;padding:0}
+    .app{max-width:none}
+    .card,.metric{border-color:#ccc;background:#fff}
+    .metric .val,.tgt-ok,.tgt-bad,.tgt-warn{color:#111!important}
+    .sect,.eyebrow,.metric .lbl{color:#555!important}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <rect x="25" y="16" width="50" height="68" rx="8" stroke="#F2EBDA" stroke-width="4.4"></rect>
+        <circle cx="36" cy="37" r="3.2" fill="#F4D03F"></circle>
+        <path d="M44 37 H66" stroke="#46C98A" stroke-width="4" stroke-linecap="round"></path>
+        <circle cx="36" cy="50" r="3.2" fill="rgba(242,235,218,.5)"></circle>
+        <path d="M44 50 H62" stroke="rgba(242,235,218,.5)" stroke-width="4" stroke-linecap="round"></path>
+        <circle cx="36" cy="63" r="3.2" fill="rgba(242,235,218,.5)"></circle>
+        <path d="M44 63 H58" stroke="rgba(242,235,218,.5)" stroke-width="4" stroke-linecap="round"></path>
+      </svg>
+      <div class="wm"><span>Practice</span><b>IQ</b></div>
+    </div>
+    <div class="suite">GolfIQ suite</div>
+  </header>
+
+  <main class="wrap" id="view"></main>
+</div>
+
+<nav id="nav"></nav>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================ CONTENT ============================ */
+const SWING_THOUGHT = "Pressure left, then swing.";
+
+/* The six red flags, drawn from the bad-shot triggers, each with a catch-it cue. */
+const RED_FLAGS = [
+  {t:"Aggressive from the top", d:"Rushing the downswing and throwing the club from the top.", c:"Cue: start down slow, let it build."},
+  {t:"Hips spin before pressure shifts", d:"Body opens early while weight is still on the trail side.", c:"Cue: pressure into the lead foot first, then turn."},
+  {t:"Trying to hit it harder", d:"Adding effort beyond your stock 70–80% swing.", c:"Cue: smooth wins — speed comes from sequence."},
+  {t:"Losing balance / sequencing", d:"Off-balance finish, out of order from the ground up.", c:"Cue: hold the finish for two seconds."},
+  {t:"Standing up through impact", d:"Early extension — hips thrust toward the ball, posture lost.", c:"Cue: keep the tush line, stay in your posture."},
+  {t:"Hanging back on the trail foot", d:"Weight stuck on the back side, low point behind the ball.", c:"Cue: finish with the trail heel up, belt buckle left."}
+];
+
+/* Pre-shot and pre-putt routines */
+const PRESHOT = [
+  "Stand behind the ball and pick the smallest target you can.",
+  "Take one rehearsal swing feeling pressure move into your lead foot before you turn.",
+  "Step in and set your feet to the target line.",
+  "One look at the target, one breath out.",
+  "Trigger: say \u201cpressure left\u201d \u2014 then swing at 70\u201380%."
+];
+const PREPUTT = [
+  "Read from behind the ball; pick a start line and an apex point.",
+  "Two practice strokes while looking at the hole \u2014 feel the pace, not the line.",
+  "Set the putter face square to your start line.",
+  "Eyes hole \u2192 ball \u2192 stroke. No freeze, no third practice stroke."
+];
+
+/* Home routines */
+const ROUTINE_DAILY = {
+  name:"Daily routine", time:"10\u201315 min",
+  steps:[
+    {t:"Pressure preview \u2014 no ball", m:2, p:"Pressure shift",
+      d:"Feet together. As you start down, step into the lead foot so weight moves left before the body turns. 10 slow reps."},
+    {t:"Divot Board low-point ladder \u2014 foam balls", m:6, p:"Low-point / strike",
+      d:"Slow L-to-L swings at 70%. Goal: every strike mark starts at or after the ball. Count how many of 10 bottom out after the ball."},
+    {t:"Wait-at-the-top tempo \u2014 tempo trainer", m:3, p:"Sequencing",
+      d:"Swing to the top, feel one beat of \u201cwait,\u201d let the arms fall before rotating. 8\u201310 reps."},
+    {t:"3-foot gate makes \u2014 Wellputt", m:3, p:"Putting",
+      d:"10 putts through the gate with a full pre-putt routine each time. A miss resets you to zero."}
+  ]
+};
+const ROUTINE_EXT = {
+  name:"Extended routine", time:"20\u201325 min",
+  steps:[
+    ...ROUTINE_DAILY.steps,
+    {t:"Strike-location block \u2014 Divot Board", m:5, p:"Face & strike",
+      d:"Same low-point feel; now also note heel / center / toe on the board. 15 foam balls, no scoring of direction \u2014 just where you caught it."},
+    {t:"Speed or driver block", m:4, p:"Speed / driver",
+      d:"Speed day: run the Skillz protocol. Otherwise: driver balance reps \u2014 tee height set, 80% swings, hold a balanced finish."},
+    {t:"Putting ladder + lag \u2014 Wellputt", m:5, p:"Putting / pace",
+      d:"6-ft then 10-ft makes, then 4 lag putts from the far end finishing past the hole inside 3 ft."}
+  ]
+};
+
+/* Skillz weekly speed schedule */
+const SPEED_PLAN = [
+  "2 sessions / week, on separate days. Never on the same day as a strike-quality range session.",
+  "Warm up with 5 easy swings before any max-effort reps.",
+  "3 sets of 3 swings per stick, progressing light \u2192 medium \u2192 heavy at max effort \u2014 but always to a balanced finish.",
+  "After each set, hit one 80% \u201cstock\u201d swing to re-couple speed with sequencing.",
+  "Log max + average. Only tick \u201cbalance held\u201d if you finished in control \u2014 speed that breaks your sequence doesn\u2019t count."
+];
+
+/* 70-ball range session structure */
+const RANGE_PLAN = [
+  {n:"10 balls", t:"Pressure-shift rehearsals at 70%", d:"Don\u2019t score these. Just feel weight left before the turn."},
+  {n:"50 balls", t:"Stock iron routine \u2014 score every ball", d:"Full pre-shot, \u201cpressure left, then swing.\u201d Tag each: low point + strike."},
+  {n:"10 balls", t:"Driver / longest club, balance first", d:"Tee height set, 80% effort, hold every finish."}
+];
+
+/* Wellputt program */
+const PUTT_PLAN = [
+  {dist:"3 ft", goal:"Start line & confidence", d:"Gate or coin gate. Hole 10 in a row; a miss resets to zero."},
+  {dist:"6 ft", goal:"The scoring zone", d:"This is where strokes hide. 3 sets of 10, track make %."},
+  {dist:"10 ft", goal:"Speed + read", d:"Make % matters less than every miss finishing 12\u201318\u201d past."},
+  {dist:"10\u201330 ft", goal:"Lag / 3-putt avoidance", d:"\u201cSafe\u201d = past the hole and inside a 3-ft circle."}
+];
+
+/* 30-day plan. mode = home routine; flags add range/speed/round/checkpoint. */
+const PLAN = [
+  // Week 1 — Establish the feel
+  {d:1, w:1, focus:"Baseline range session", pillar:"full", mode:"daily", range:true, note:"Score a 70-ball session as-is. This is your starting fat-shot count \u2014 don\u2019t judge it."},
+  {d:2, w:1, focus:"Low-point ladder + 3-ft gate", pillar:"full", mode:"daily", note:"Pure pressure-shift feel. Divot starts after the ball."},
+  {d:3, w:1, focus:"Speed intro \u2014 light only", pillar:"speed", mode:"extended", speed:true, note:"Easy speed day to learn the sticks. Balanced finishes only."},
+  {d:4, w:1, focus:"Wait-at-the-top tempo", pillar:"full", mode:"daily", note:"Let the arms fall. No effort from the top."},
+  {d:5, w:1, focus:"Range \u2014 score with routine", pillar:"full", mode:"daily", range:true, note:"Full pre-shot on every scored ball. Watch the fat count."},
+  {d:6, w:1, focus:"Putting ladder 3/6 ft", pillar:"putt", mode:"extended", note:"Build the pre-putt routine until it\u2019s automatic."},
+  {d:7, w:1, focus:"Week 1 checkpoint", pillar:"full", mode:"daily", checkpoint:true, note:"Review your numbers vs targets. Rest the body if sore."},
+  // Week 2 — Ingrain sequencing
+  {d:8, w:2, focus:"Sequence reps + tempo", pillar:"full", mode:"daily", note:"Pressure left, wait, fall, release. L-to-L."},
+  {d:9, w:2, focus:"Speed session 1", pillar:"speed", mode:"extended", speed:true, note:"3 sets per stick. Re-couple with an 80% strike swing each set."},
+  {d:10, w:2, focus:"Range \u2014 contact grading", pillar:"full", mode:"daily", range:true, note:"Aim for a B+ contact grade. Fat shots trending down."},
+  {d:11, w:2, focus:"6-ft putting block", pillar:"putt", mode:"daily", note:"The scoring zone. 3 sets of 10."},
+  {d:12, w:2, focus:"Speed session 2", pillar:"speed", mode:"extended", speed:true, note:"Compare max vs last session. Balance must hold."},
+  {d:13, w:2, focus:"Driver balance + range", pillar:"full", mode:"daily", range:true, note:"Last 10 balls of the session on driver, balance-first."},
+  {d:14, w:2, focus:"Week 2 checkpoint", pillar:"full", mode:"daily", checkpoint:true, note:"Fat shots under 4? Ball-first % up? Adjust effort if not."},
+  // Week 3 — Pressure under load
+  {d:15, w:3, focus:"Stock swing under routine", pillar:"full", mode:"extended", note:"Every rep gets a full pre-shot, like the first tee."},
+  {d:16, w:3, focus:"Speed session 3", pillar:"speed", mode:"extended", speed:true, note:"Push max effort \u2014 but no rep counts unless you finish balanced."},
+  {d:17, w:3, focus:"Range \u2014 pressure test", pillar:"full", mode:"daily", range:true, note:"Random clubs, score every ball. Hold yourself to the cue."},
+  {d:18, w:3, focus:"10-ft + lag putting", pillar:"putt", mode:"extended", note:"Every miss finishes past. Build pace control 10\u201330 ft."},
+  {d:19, w:3, focus:"Speed session 4 + driver", pillar:"speed", mode:"extended", speed:true, note:"Then driver balance reps. Athletic but in sequence."},
+  {d:20, w:3, focus:"Play 9 \u2014 round review", pillar:"score", mode:"daily", round:true, note:"On course, one thought only: pressure left. Log the round."},
+  {d:21, w:3, focus:"Week 3 checkpoint", pillar:"full", mode:"daily", checkpoint:true, note:"Doubles down? Up-and-downs up? Speed holding sequence?"},
+  // Week 4 — Consolidate & test
+  {d:22, w:4, focus:"Trust the cue \u2014 less thinking", pillar:"full", mode:"daily", note:"One swing thought. React to the target, don\u2019t steer."},
+  {d:23, w:4, focus:"Range \u2014 contact grade push", pillar:"full", mode:"daily", range:true, note:"Best grade of the month? Fat shots toward < 2."},
+  {d:24, w:4, focus:"Speed session 5", pillar:"speed", mode:"extended", speed:true, note:"Confirm a new max with balance intact."},
+  {d:25, w:4, focus:"Short game + 6-ft makes", pillar:"putt", mode:"daily", note:"Up-and-down focus. Make % from the scoring zone."},
+  {d:26, w:4, focus:"Driver confidence", pillar:"speed", mode:"extended", note:"80% swings, balanced finishes, commit to a target."},
+  {d:27, w:4, focus:"Play 9 \u2014 keep doubles off the card", pillar:"score", mode:"daily", round:true, note:"Bogey is fine. Eliminate the blow-up hole. Log it."},
+  {d:28, w:4, focus:"Week 4 checkpoint", pillar:"full", mode:"daily", checkpoint:true, note:"Compare to every prior checkpoint."},
+  {d:29, w:4, focus:"Re-test baseline range", pillar:"full", mode:"daily", range:true, note:"Same 70-ball test as Day 1. Measure the change."},
+  {d:30, w:4, focus:"Review month \u2014 set next 30", pillar:"full", mode:"extended", note:"What\u2019s automatic now? What\u2019s the next single swing thought?"}
+];
+const WEEK_TITLES = {1:"Week 1 \u00b7 Establish the feel", 2:"Week 2 \u00b7 Ingrain sequencing",
+  3:"Week 3 \u00b7 Pressure under load", 4:"Week 4 \u00b7 Consolidate & test"};
+
+/* ============================ DATA LAYER ============================ */
+const DB_NAME="practiceiq", STORE="records";
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,1);
+  r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(STORE)){
+    const s=db.createObjectStore(STORE,{keyPath:"id"});s.createIndex("type","type");s.createIndex("date","date");}};
+  r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+function dbAll(){return openDB().then(db=>new Promise((res,rej)=>{const req=db.transaction(STORE).objectStore(STORE).getAll();
+  req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);}));}
+function dbPut(rec){return openDB().then(db=>new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");
+  tx.objectStore(STORE).put(rec);tx.oncomplete=()=>res(rec);tx.onerror=()=>rej(tx.error);}));}
+function dbDel(id){return openDB().then(db=>new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");
+  tx.objectStore(STORE).delete(id);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);}));}
+function dbClear(){return openDB().then(db=>new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");
+  tx.objectStore(STORE).clear();tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);}));}
+
+let RECORDS=[];
+const uid=()=>Date.now()+"-"+Math.random().toString(36).slice(2,7);
+const today=()=>new Date().toISOString().slice(0,10);
+const fmtDate=(s)=>{const d=new Date(s+"T00:00:00");return d.toLocaleDateString(undefined,{month:"short",day:"numeric"});};
+const byType=(t)=>RECORDS.filter(r=>r.type===t).sort((a,b)=>(a.date<b.date?1:-1));
+function planRec(){return RECORDS.find(r=>r.id==="plan-progress")||{id:"plan-progress",type:"meta",done:[]};}
+
+async function refresh(){RECORDS=await dbAll();}
+
+/* ============================ METRICS ============================ */
+function rangeMetrics(r){
+  const total=r.tally.pure+r.tally.thin+r.tally.fat+r.tally.mishit;
+  const score=r.tally.pure*3+r.tally.thin*1;
+  const grade= total? Math.round(score/(total*3)*100):0;
+  const ballFirst= total? Math.round((r.tally.pure+r.tally.thin)/total*100):0;
+  const lowTot=r.low.before+r.low.at+r.low.after;
+  const afterPct= lowTot? Math.round(r.low.after/lowTot*100):null;
+  const fatPer70= r.size? +(r.tally.fat/r.size*70).toFixed(1):r.tally.fat;
+  return {total,grade,ballFirst,afterPct,fatPer70};
+}
+function gradeLetter(p){return p>=85?"A":p>=70?"B":p>=55?"C":p>=40?"D":"F";}
+function puttMake(p){const m=p.d3.makes+p.d6.makes,a=p.d3.att+p.d6.att;return a?Math.round(m/a*100):null;}
+function handicap(){
+  const rounds=byType("round").filter(r=>r.rating&&r.slope&&r.score);
+  if(!rounds.length)return null;
+  const diffs=rounds.map(r=>(r.score-r.rating)*113/r.slope).sort((a,b)=>a-b);
+  const n=Math.min(8,diffs.length);
+  const avg=diffs.slice(0,n).reduce((s,d)=>s+d,0)/n;
+  return +(avg*0.96).toFixed(1);
+}
+function streak(){
+  const days=new Set(RECORDS.filter(r=>["home","range","speed","putting"].includes(r.type)).map(r=>r.date));
+  if(!days.size)return 0;
+  let n=0;const d=new Date();
+  // allow today or yesterday as the anchor
+  const iso=x=>x.toISOString().slice(0,10);
+  if(!days.has(iso(d))){d.setDate(d.getDate()-1);if(!days.has(iso(d)))return 0;}
+  while(days.has(iso(d))){n++;d.setDate(d.getDate()-1);}
+  return n;
+}
+function nextPlanDay(){const done=new Set(planRec().done);for(const p of PLAN)if(!done.has(p.d))return p;return null;}
+
+/* tiny sparkline */
+function spark(vals,{w=120,h=26,color="var(--fairway)",invert=false}={}){
+  if(!vals||vals.length<2)return "";
+  const min=Math.min(...vals),max=Math.max(...vals),rng=(max-min)||1;
+  const pts=vals.map((v,i)=>{const x=i/(vals.length-1)*w;const y=h-((v-min)/rng)*(h-4)-2;return [x,y];});
+  const d=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  const last=pts[pts.length-1];
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="none">
+    <path d="${d}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.6" fill="${color}"/></svg>`;
+}
+
+/* ============================ UI HELPERS ============================ */
+const $=(s,el=document)=>el.querySelector(s);
+const view=$("#view");
+let TAB="today", PRACTICE="home";
+let toastT;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove("show"),1900);}
+const esc=(s)=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const check=`<svg viewBox="0 0 24 24" fill="none" stroke="#06251a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>`;
+
+/* ============================ RENDER: TODAY ============================ */
+function renderToday(){
+  const rg=byType("range"), pt=byType("putting"), latest=rg[0];
+  const m=latest?rangeMetrics(latest):null;
+  const fatSeries=rg.slice(0,8).reverse().map(r=>rangeMetrics(r).fatPer70);
+  const bfSeries=rg.slice(0,8).reverse().map(r=>rangeMetrics(r).ballFirst);
+  const puttSeries=pt.slice(0,8).reverse().map(puttMake).filter(v=>v!=null);
+  const lastPutt=pt.map(puttMake).find(v=>v!=null);
+  const hc=handicap();
+  const np=nextPlanDay();
+  const done=planRec().done.length;
+  const fatClass=m? (m.fatPer70<2?"tgt-ok":m.fatPer70<4?"tgt-warn":"tgt-bad"):"";
+
+  let html=cueHTML();
+
+  // hero metric: fat shots / 70
+  html+=`<div class="metrics">
+    <div class="metric hero">
+      <div class="lbl">Fat shots \u00b7 per 70 balls</div>
+      <div class="val ${fatClass}">${m?m.fatPer70:"\u2014"}<s>target &lt; 2</s></div>
+      <div class="sub">${m?`Last session: ${latest.tally.fat} fat of ${m.total} scored \u00b7 ${fmtDate(latest.date)}`:"Log a range session to start tracking."}</div>
+      ${spark(fatSeries,{color:"var(--yellow)"})}
+    </div>
+    <div class="metric">
+      <div class="lbl">Ball-first %</div>
+      <div class="val">${m?m.ballFirst:"\u2014"}<s>%</s></div>
+      ${spark(bfSeries)}
+    </div>
+    <div class="metric">
+      <div class="lbl">3\u20136 ft make %</div>
+      <div class="val">${lastPutt!=null?lastPutt:"\u2014"}<s>%</s></div>
+      ${spark(puttSeries)}
+    </div>
+    <div class="metric">
+      <div class="lbl">Handicap (est.)</div>
+      <div class="val">${hc!=null?hc:"\u2014"}</div>
+      <div class="sub">${hc!=null?"From logged rounds":"Add rounds with rating + slope"}</div>
+    </div>
+    <div class="metric">
+      <div class="lbl">Streak</div>
+      <div class="val">${streak()}<s>days</s></div>
+      <div class="sub">${done}/30 plan days done</div>
+    </div>
+  </div>`;
+
+  // Today's focus
+  if(np){
+    html+=`<div class="sect">Today \u2014 Day ${np.d}</div>
+    <div class="card">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${pillFor(np)}</div>
+      <div class="t" style="font-weight:600;font-size:16px;margin-top:9px">${esc(np.focus)}</div>
+      <div class="d" style="margin-top:5px;font-size:13px;color:var(--dim)">${esc(np.note)}</div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="btn" onclick="go('practice','${np.mode==='extended'?'home':'home'}')">${np.mode==='extended'?'Extended routine':'Daily routine'}</button>
+        ${np.range?`<button class="btn ghost sm" onclick="go('practice','range')">Range</button>`:""}
+        ${np.speed?`<button class="btn ghost sm" onclick="go('practice','speed')">Speed</button>`:""}
+        ${np.round?`<button class="btn ghost sm" onclick="go('rounds')">Round</button>`:""}
+      </div>
+    </div>`;
+  } else {
+    html+=`<div class="sect">Plan complete</div><div class="card"><div class="muted small">All 30 days done. Review the month and set your next single swing thought.</div></div>`;
+  }
+
+  // Recent activity
+  const recent=RECORDS.filter(r=>r.type!=="meta").sort((a,b)=>(a.date<b.date?1:-1)).slice(0,5);
+  html+=`<div class="sect">Recent</div><div class="card">`;
+  if(!recent.length) html+=`<div class="empty">Nothing logged yet. Your sessions show up here.</div>`;
+  else html+=recent.map(rowFor).join("");
+  html+=`</div>`;
+
+  view.innerHTML=html;
+}
+function cueHTML(){return `<div class="cue"><span class="dot"></span><div><small>Swing thought \u00b7 30 days</small><b>${SWING_THOUGHT}</b></div></div>`;}
+function pillFor(p){
+  const map={full:["full","Full swing"],speed:["speed","Speed"],putt:["putt","Putting"],score:["score","Scoring"]};
+  let out=`<span class="pill ${map[p.pillar][0]}">${map[p.pillar][1]}</span>`;
+  if(p.range)out+=`<span class="pill">Range 70</span>`;
+  if(p.speed)out+=`<span class="pill">Skillz</span>`;
+  if(p.round)out+=`<span class="pill">Play 9</span>`;
+  if(p.checkpoint)out+=`<span class="pill" style="color:var(--yellow);border-color:rgba(244,208,63,.4)">Checkpoint</span>`;
+  return out;
+}
+function rowFor(r){
+  let title="",detail="";
+  if(r.type==="range"){const m=rangeMetrics(r);title=`Range \u00b7 ${m.total} balls`;detail=`Grade ${gradeLetter(m.grade)} \u00b7 ${r.tally.fat} fat \u00b7 ${m.ballFirst}% ball-first`;}
+  else if(r.type==="home"){title=`${r.mode==="extended"?"Extended":"Daily"} routine`;detail=`${r.steps.filter(Boolean).length}/${r.steps.length} steps \u00b7 ${"\u2605".repeat(r.adherence||0)||"unrated"}`;}
+  else if(r.type==="speed"){const mx=Math.max(...r.readings.map(x=>x.max||0));title=`Speed \u00b7 max ${mx||"\u2014"} mph`;detail=`${r.balanceHeld?"Balance held":"Balance dropped"}`;}
+  else if(r.type==="putting"){const p=puttMake(r);title=`Putting \u00b7 ${p!=null?p+"% short":"logged"}`;detail=`3ft ${r.d3.makes}/${r.d3.att} \u00b7 6ft ${r.d6.makes}/${r.d6.att} \u00b7 10ft ${r.d10.makes}/${r.d10.att}`;}
+  else if(r.type==="round"){title=`Round \u00b7 ${r.score}`;detail=`${r.doubles} dbl+ \u00b7 ${r.threePutts} 3-putts`;}
+  else if(r.type==="redflag"){title=`Flagged: ${r.flag}`;detail="Reversion noted";}
+  return `<div class="row"><div class="g"><div class="t">${esc(title)}</div><div class="d">${esc(detail)}</div></div>
+    <div style="text-align:right"><div class="pill">${fmtDate(r.date)}</div></div></div>`;
+}
+
+/* ============================ RENDER: PRACTICE ============================ */
+function renderPractice(){
+  let html=cueHTML();
+  html+=`<div class="seg">
+    ${["home","range","speed","putting"].map(k=>`<button class="${PRACTICE===k?'on':''}" onclick="setPractice('${k}')">${({home:"Home",range:"Range",speed:"Speed",putting:"Putting"})[k]}</button>`).join("")}
+  </div><div id="psub"></div>`;
+  view.innerHTML=html;
+  renderPracticeSub();
+}
+function setPractice(k){PRACTICE=k;renderPracticeSub();
+  document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.textContent.toLowerCase().startsWith(k.slice(0,4))||({home:"Home",range:"Range",speed:"Speed",putting:"Putting"})[k]===b.textContent));}
+
+let RANGE_DRAFT=null, HOME_DRAFT=null;
+function renderPracticeSub(){
+  const el=$("#psub");
+  if(PRACTICE==="home")el.innerHTML=homeForm();
+  else if(PRACTICE==="range")el.innerHTML=rangeForm();
+  else if(PRACTICE==="speed")el.innerHTML=speedForm();
+  else el.innerHTML=puttForm();
+}
+
+/* --- Home routine --- */
+function homeForm(){
+  if(!HOME_DRAFT)HOME_DRAFT={mode:"daily",steps:ROUTINE_DAILY.steps.map(()=>false),adherence:0,note:""};
+  const R=HOME_DRAFT.mode==="extended"?ROUTINE_EXT:ROUTINE_DAILY;
+  if(HOME_DRAFT.steps.length!==R.steps.length)HOME_DRAFT.steps=R.steps.map(()=>false);
+  let h=`<div class="seg" style="margin-top:2px">
+     <button class="${HOME_DRAFT.mode==='daily'?'on':''}" onclick="setHomeMode('daily')">Daily \u00b7 10\u201315</button>
+     <button class="${HOME_DRAFT.mode==='extended'?'on':''}" onclick="setHomeMode('extended')">Extended \u00b7 20\u201325</button>
+   </div>
+   <div class="card">`;
+  h+=R.steps.map((s,i)=>`<div class="step ${HOME_DRAFT.steps[i]?'done':''}" onclick="toggleHomeStep(${i})">
+      <div class="chk ${HOME_DRAFT.steps[i]?'on':''}">${check}</div>
+      <div class="sg"><div class="st">${esc(s.t)}</div><div class="sd">${esc(s.d)}</div><div class="sp">${esc(s.p)}</div></div>
+      <div class="mins">${s.m} min</div></div>`).join("");
+  h+=`</div>
+   <label class="f">How well did \u201cpressure left, then swing\u201d hold today?</label>
+   <div class="stars">${[1,2,3,4,5].map(n=>`<button class="${HOME_DRAFT.adherence>=n?'on':''}" onclick="setHomeStars(${n})">\u2605</button>`).join("")}</div>
+   <label class="f">Note (optional)</label>
+   <textarea id="homeNote" placeholder="What felt good? Any red flag creeping in?" oninput="HOME_DRAFT.note=this.value">${esc(HOME_DRAFT.note)}</textarea>
+   <div style="margin-top:16px"><button class="btn" onclick="saveHome()">Save routine</button></div>`;
+  return h;
+}
+function setHomeMode(m){HOME_DRAFT.mode=m;HOME_DRAFT.steps=(m==="extended"?ROUTINE_EXT:ROUTINE_DAILY).steps.map(()=>false);renderPracticeSub();}
+function toggleHomeStep(i){HOME_DRAFT.steps[i]=!HOME_DRAFT.steps[i];renderPracticeSub();}
+function setHomeStars(n){HOME_DRAFT.adherence=HOME_DRAFT.adherence===n?0:n;renderPracticeSub();}
+async function saveHome(){
+  await dbPut({id:uid(),type:"home",date:today(),mode:HOME_DRAFT.mode,steps:HOME_DRAFT.steps.slice(),adherence:HOME_DRAFT.adherence,note:HOME_DRAFT.note});
+  HOME_DRAFT=null;await refresh();toast("Routine saved");renderPracticeSub();}
+
+/* --- Range 70-ball --- */
+function rangeForm(){
+  if(!RANGE_DRAFT)RANGE_DRAFT={size:70,tally:{pure:0,thin:0,fat:0,mishit:0},low:{before:0,at:0,after:0},flags:[],note:""};
+  const D=RANGE_DRAFT, total=D.tally.pure+D.tally.thin+D.tally.fat+D.tally.mishit;
+  const m=rangeMetrics({size:D.size,tally:D.tally,low:D.low});
+  let h=`<div class="card" style="margin-bottom:14px">
+    <div class="eyebrow">Session plan \u00b7 70 balls</div>`;
+  h+=RANGE_PLAN.map(b=>`<div class="row"><div class="g"><div class="t">${esc(b.t)}</div><div class="d">${esc(b.d)}</div></div><div class="pill">${b.n}</div></div>`).join("");
+  h+=`</div>
+   <label class="f">Session size</label>
+   <div class="seg" style="margin-top:0">${[50,70,100].map(s=>`<button class="${D.size===s?'on':''}" onclick="RANGE_DRAFT.size=${s};renderPracticeSub()">${s}</button>`).join("")}</div>
+   <div class="card">
+     <div style="display:flex;justify-content:space-between;align-items:baseline">
+       <div class="eyebrow">Tap each scored ball</div>
+       <div class="mono" style="font-size:13px">${total}/${D.size} scored</div>
+     </div>
+     <div class="taps">
+       <button class="tap pure" onclick="rngTally('pure',1)"><div class="tn">${D.tally.pure}</div><div class="tl">Pure \u2014 ball-first, solid</div></button>
+       <button class="tap" onclick="rngTally('thin',1)"><div class="tn">${D.tally.thin}</div><div class="tl">Thin \u2014 ball-first, low</div></button>
+       <button class="tap fat" onclick="rngTally('fat',1)"><div class="tn">${D.tally.fat}</div><div class="tl">Fat / chunk</div></button>
+       <button class="tap" onclick="rngTally('mishit',1)"><div class="tn">${D.tally.mishit}</div><div class="tl">Other mishit</div></button>
+     </div>
+     <div style="display:flex;gap:8px;margin-top:10px">
+       <button class="btn ghost sm" onclick="rngUndo()">Undo last</button>
+       <div style="flex:1"></div>
+       <div class="mono small" style="align-self:center;color:var(--dim)">Grade <b style="color:var(--ivory)">${total?gradeLetter(m.grade):"\u2014"}</b> \u00b7 ${m.ballFirst}% ball-first</div>
+     </div>
+   </div>
+
+   <label class="f">Divot Board low point (optional)</label>
+   <div class="grid3">
+     ${["before","at","after"].map(k=>`<div class="counter" style="flex-direction:column;align-items:stretch;gap:8px">
+        <div class="num" style="text-align:center">${D.low[k]}</div>
+        <div style="display:flex;gap:6px"><button onclick="rngLow('${k}',-1)">\u2212</button><button onclick="rngLow('${k}',1)" style="flex:1">${k}</button></div>
+      </div>`).join("")}
+   </div>
+   ${m.afterPct!=null?`<div class="small muted" style="margin-top:8px">${m.afterPct}% bottoming out after the ball \u2014 that\u2019s your low-point control.</div>`:""}
+
+   <label class="f">Red flag felt this session?</label>
+   <div style="display:flex;flex-wrap:wrap;gap:7px">
+     ${RED_FLAGS.map(f=>`<button class="pill ${D.flags.includes(f.t)?'score':''}" style="cursor:pointer;border-style:solid" onclick="rngFlag('${esc(f.t).replace(/'/g,"\\'")}')">${esc(f.t)}</button>`).join("")}
+   </div>
+   <label class="f">Note</label>
+   <textarea placeholder="Clubs, conditions, what you worked on" oninput="RANGE_DRAFT.note=this.value">${esc(D.note)}</textarea>
+   <div style="margin-top:16px"><button class="btn" onclick="saveRange()" ${total?"":"disabled"}>Save session</button></div>`;
+  return h;
+}
+function rngTally(k,n){RANGE_DRAFT.tally[k]=Math.max(0,RANGE_DRAFT.tally[k]+n);RANGE_DRAFT._last=k;renderPracticeSub();}
+function rngUndo(){if(RANGE_DRAFT._last)RANGE_DRAFT.tally[RANGE_DRAFT._last]=Math.max(0,RANGE_DRAFT.tally[RANGE_DRAFT._last]-1);renderPracticeSub();}
+function rngLow(k,n){RANGE_DRAFT.low[k]=Math.max(0,RANGE_DRAFT.low[k]+n);renderPracticeSub();}
+function rngFlag(t){const i=RANGE_DRAFT.flags.indexOf(t);if(i>=0)RANGE_DRAFT.flags.splice(i,1);else RANGE_DRAFT.flags.push(t);renderPracticeSub();}
+async function saveRange(){
+  const D=RANGE_DRAFT;
+  await dbPut({id:uid(),type:"range",date:today(),size:D.size,tally:{...D.tally},low:{...D.low},flags:D.flags.slice(),note:D.note});
+  for(const f of D.flags)await dbPut({id:uid(),type:"redflag",date:today(),flag:f});
+  RANGE_DRAFT=null;await refresh();toast("Range session saved");renderPracticeSub();}
+
+/* --- Speed --- */
+function speedForm(){
+  let h=`<div class="card" style="margin-bottom:14px"><div class="eyebrow">Skillz weekly protocol</div><ul class="ol" style="margin-top:8px">
+    ${SPEED_PLAN.map(s=>`<li>${esc(s)}</li>`).join("")}</ul></div>`;
+  const last=byType("speed")[0];
+  if(last){const mx=Math.max(...last.readings.map(x=>x.max||0));h+=`<div class="small muted" style="margin:0 2px 12px">Last max: <b style="color:var(--ivory)">${mx} mph</b> on ${fmtDate(last.date)}</div>`;}
+  h+=`<div class="card">
+    ${["Light","Medium","Heavy"].map((lbl,i)=>`<div style="margin-bottom:${i<2?'12px':'0'}">
+       <div class="eyebrow" style="margin-bottom:6px">${lbl} stick</div>
+       <div class="grid2">
+         <input type="number" inputmode="decimal" id="sp${i}max" placeholder="Max mph">
+         <input type="number" inputmode="decimal" id="sp${i}avg" placeholder="Avg mph">
+       </div></div>`).join("")}
+  </div>
+  <label class="f" style="display:flex;align-items:center;gap:10px;text-transform:none;letter-spacing:0;font-family:var(--ui);font-size:14px;color:var(--ivory)">
+    <input type="checkbox" id="spBal" style="width:22px;height:22px;accent-color:var(--fairway)"> Balance &amp; sequencing held on every rep
+  </label>
+  <label class="f">Note</label>
+  <textarea id="spNote" placeholder="How did it feel? Did speed cost you sequence?"></textarea>
+  <div style="margin-top:16px"><button class="btn" onclick="saveSpeed()">Save speed session</button></div>`;
+  return h;
+}
+async function saveSpeed(){
+  const readings=["Light","Medium","Heavy"].map((lbl,i)=>({label:lbl,
+    max:+($("#sp"+i+"max").value)||0,avg:+($("#sp"+i+"avg").value)||0}));
+  if(!readings.some(r=>r.max||r.avg)){toast("Enter at least one reading");return;}
+  await dbPut({id:uid(),type:"speed",date:today(),readings,balanceHeld:$("#spBal").checked,note:$("#spNote").value});
+  await refresh();toast("Speed session saved");renderPracticeSub();}
+
+/* --- Putting --- */
+function puttForm(){
+  let h=`<div class="card" style="margin-bottom:14px"><div class="eyebrow">Wellputt program</div>`;
+  h+=PUTT_PLAN.map(p=>`<div class="row"><div class="g"><div class="t">${esc(p.dist)} \u2014 ${esc(p.goal)}</div><div class="d">${esc(p.d)}</div></div></div>`).join("");
+  h+=`</div><div class="card">`;
+  h+=[["d3","3 ft"],["d6","6 ft"],["d10","10 ft"]].map(([k,lbl])=>`
+    <div style="margin-bottom:12px"><div class="eyebrow" style="margin-bottom:6px">${lbl} \u2014 makes / attempts</div>
+      <div class="grid2"><input type="number" inputmode="numeric" id="${k}m" placeholder="Makes">
+      <input type="number" inputmode="numeric" id="${k}a" placeholder="Attempts"></div></div>`).join("");
+  h+=`<div><div class="eyebrow" style="margin-bottom:6px">Lag 10\u201330 ft \u2014 safe / attempts</div>
+      <div class="grid2"><input type="number" inputmode="numeric" id="lgs" placeholder="Finished safe">
+      <input type="number" inputmode="numeric" id="lga" placeholder="Attempts"></div></div></div>
+   <label class="f">Note</label>
+   <textarea id="ptNote" placeholder="Stroke feel, pace, routine"></textarea>
+   <div style="margin-top:16px"><button class="btn" onclick="savePutt()">Save putting session</button></div>`;
+  return h;
+}
+async function savePutt(){
+  const g=(id)=>Math.max(0,+($("#"+id).value)||0);
+  const rec={id:uid(),type:"putting",date:today(),
+    d3:{makes:g("d3m"),att:g("d3a")},d6:{makes:g("d6m"),att:g("d6a")},d10:{makes:g("d10m"),att:g("d10a")},
+    lag:{safe:g("lgs"),att:g("lga")},note:$("#ptNote").value};
+  if(!(rec.d3.att||rec.d6.att||rec.d10.att||rec.lag.att)){toast("Enter at least one distance");return;}
+  await dbPut(rec);await refresh();toast("Putting session saved");renderPracticeSub();}
+
+/* ============================ RENDER: ROUNDS ============================ */
+function renderRounds(){
+  const rounds=byType("round");const hc=handicap();
+  const scoreSeries=rounds.slice(0,8).reverse().map(r=>r.score);
+  let h=cueHTML();
+  h+=`<div class="metrics">
+    <div class="metric"><div class="lbl">Handicap (est.)</div><div class="val">${hc!=null?hc:"\u2014"}</div><div class="sub">${rounds.length} round${rounds.length===1?"":"s"} logged</div></div>
+    <div class="metric"><div class="lbl">Last score</div><div class="val">${rounds[0]?rounds[0].score:"\u2014"}</div>${spark(scoreSeries,{color:"var(--yellow)"})}</div>
+  </div>`;
+  h+=`<div class="sect">Log a round</div><div class="card">
+    <div class="grid2">
+      <div><label class="f">Score</label><input type="number" inputmode="numeric" id="rdScore"></div>
+      <div><label class="f">Holes</label><select id="rdHoles"><option>18</option><option>9</option></select></div>
+    </div>
+    <div class="grid2">
+      <div><label class="f">Course rating</label><input type="number" inputmode="decimal" id="rdRating" placeholder="e.g. 71.2"></div>
+      <div><label class="f">Slope</label><input type="number" inputmode="numeric" id="rdSlope" placeholder="e.g. 128"></div>
+    </div>
+    <div class="grid3">
+      <div><label class="f">Doubles+</label><input type="number" inputmode="numeric" id="rdDbl" placeholder="0"></div>
+      <div><label class="f">3-putts</label><input type="number" inputmode="numeric" id="rd3p" placeholder="0"></div>
+      <div><label class="f">U&amp;D won</label><input type="number" inputmode="numeric" id="rdUd" placeholder="0"></div>
+    </div>
+    <div><label class="f">Up-and-down chances</label><input type="number" inputmode="numeric" id="rdUdA" placeholder="Greens missed near pin"></div>
+    <hr class="sep">
+    <div class="eyebrow">Round review</div>
+    <label class="f">What sequenced well?</label><textarea id="rdGood" placeholder="When did \u201cpressure left\u201d show up?"></textarea>
+    <label class="f">Where did you revert? (which red flag)</label><textarea id="rdBad" placeholder="The miss pattern that cost you"></textarea>
+    <label class="f">One thing for next round</label><textarea id="rdNext" placeholder="Single focus"></textarea>
+    <div style="margin-top:16px"><button class="btn" onclick="saveRound()">Save round</button></div>
+  </div>`;
+  h+=`<div class="sect">History</div><div class="card">`;
+  if(!rounds.length)h+=`<div class="empty">No rounds yet. Log one after you play.</div>`;
+  else h+=rounds.map(r=>{const ud=r.udAtt?Math.round(r.udConv/r.udAtt*100)+"% U&D":"";
+    return `<div class="row"><div class="g"><div class="t">Score ${r.score} \u00b7 ${fmtDate(r.date)}</div>
+      <div class="d">${r.doubles} dbl+ \u00b7 ${r.threePutts} 3-putts${ud?" \u00b7 "+ud:""}${r.next?" \u00b7 next: "+esc(r.next):""}</div></div>
+      <button class="pill" style="cursor:pointer" onclick="delRec('${r.id}')">Delete</button></div>`;}).join("");
+  h+=`</div>`;
+  view.innerHTML=h;
+}
+async function saveRound(){
+  const g=id=>$("#"+id).value;const n=id=>+g(id)||0;
+  if(!n("rdScore")){toast("Enter a score");return;}
+  await dbPut({id:uid(),type:"round",date:today(),score:n("rdScore"),holes:+g("rdHoles")||18,
+    rating:+g("rdRating")||null,slope:+g("rdSlope")||null,doubles:n("rdDbl"),threePutts:n("rd3p"),
+    udConv:n("rdUd"),udAtt:n("rdUdA"),good:g("rdGood"),reverted:g("rdBad"),next:g("rdNext")});
+  await refresh();toast("Round saved");renderRounds();}
+
+/* ============================ RENDER: PLAN ============================ */
+function renderPlan(){
+  const done=new Set(planRec().done);
+  let h=cueHTML();
+  h+=`<div class="card" style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;align-items:center">
+    <div><div class="eyebrow">30-day plan</div><div class="mono" style="font-size:13px;margin-top:4px">${done.size}/30 complete</div></div>
+    <div style="width:120px;height:7px;border-radius:99px;background:var(--line);overflow:hidden">
+      <div style="width:${Math.round(done.size/30*100)}%;height:100%;background:var(--fairway)"></div></div>
+  </div></div>`;
+  let curWeek=0;
+  h+=`<div class="card">`;
+  PLAN.forEach(p=>{
+    if(p.w!==curWeek){curWeek=p.w;h+=`<div class="weekhdr">${WEEK_TITLES[p.w]}</div>`;}
+    const dn=done.has(p.d);
+    h+=`<div class="planday ${dn?'done':''}" onclick="togglePlan(${p.d})">
+      <div class="chk ${dn?'on':''}" style="margin-top:1px">${check}</div>
+      <div class="dn">D${p.d}</div>
+      <div style="flex:1"><div class="pt">${esc(p.focus)}</div><div class="pd">${esc(p.note)}</div>
+        <div class="tags">${pillFor(p)}</div></div>
+    </div>`;
+  });
+  h+=`</div>`;
+
+  // Checkpoints
+  h+=`<div class="sect">Weekly checkpoints</div><div class="card">`;
+  h+=checkpointHTML();
+  h+=`</div>`;
+  view.innerHTML=h;
+}
+async function togglePlan(d){
+  const rec=planRec();const set=new Set(rec.done);
+  if(set.has(d))set.delete(d);else set.add(d);
+  await dbPut({id:"plan-progress",type:"meta",done:[...set].sort((a,b)=>a-b)});
+  await refresh();renderPlan();
+}
+function checkpointHTML(){
+  const rg=byType("range"),pt=byType("putting"),rd=byType("round");
+  const latest=rg[0]?rangeMetrics(rg[0]):null;
+  const fat=latest?latest.fatPer70:null;
+  const bf=latest?latest.ballFirst:null;
+  const make=pt.map(puttMake).find(v=>v!=null);
+  const dbl=rd[0]?rd[0].doubles:null;
+  const tp=rd[0]?rd[0].threePutts:null;
+  function line(label,val,unit,ok,target){
+    const cls=val==null?"":ok?"tgt-ok":"tgt-bad";
+    return `<div class="cp"><div class="cg"><div class="ct">${label}</div><div class="cs">Target: ${target}</div></div>
+      <div class="cv ${cls}">${val==null?"\u2014":val+unit}</div></div>`;
+  }
+  return [
+    line("Fat shots per 70",fat,"",fat!=null&&fat<2," < 2"),
+    line("Ball-first %",bf,"%",bf!=null&&bf>=85,"\u2265 85%"),
+    line("Short putt make %",make,"%",make!=null&&make>=70,"\u2265 70% (3\u20136 ft)"),
+    line("Doubles+ per round",dbl,"",dbl!=null&&dbl<=2,"\u2264 2"),
+    line("3-putts per round",tp,"",tp!=null&&tp<=1,"\u2264 1")
+  ].join("");
+}
+
+/* ============================ RENDER: MORE ============================ */
+function renderMore(){
+  let h=cueHTML();
+  h+=`<details class="ref" open><summary>Pre-shot routine \u2014 full swing<span class="x">+</span></summary>
+    <div class="body"><ul class="ol">${PRESHOT.map(s=>`<li>${esc(s)}</li>`).join("")}</ul></div></details>`;
+  h+=`<details class="ref"><summary>Pre-putt routine<span class="x">+</span></summary>
+    <div class="body"><ul class="ol">${PREPUTT.map(s=>`<li>${esc(s)}</li>`).join("")}</ul></div></details>`;
+  h+=`<details class="ref"><summary>Swing red flags<span class="x">+</span></summary>
+    <div class="body"><div class="small muted" style="margin-bottom:6px">When a miss shows up, name it \u2014 then log it so the pattern shows on your dashboard.</div>
+    ${RED_FLAGS.map(f=>`<div class="flag"><div class="fx"></div><div style="flex:1"><div class="ft">${esc(f.t)}</div><div class="fd">${esc(f.d)}</div><div class="fc">${esc(f.c)}</div></div>
+      <button class="pill" style="cursor:pointer;align-self:center" onclick="logFlag('${esc(f.t).replace(/'/g,"\\'")}')">Felt it</button></div>`).join("")}
+    </div></details>`;
+  h+=`<details class="ref"><summary>Daily &amp; extended routines<span class="x">+</span></summary>
+    <div class="body">${[ROUTINE_DAILY,ROUTINE_EXT].map(R=>`<div class="eyebrow" style="margin:4px 0 6px;color:var(--yellow)">${R.name} \u00b7 ${R.time}</div>
+      ${R.steps.map(s=>`<div class="step"><div class="sg"><div class="st">${esc(s.t)}</div><div class="sd">${esc(s.d)}</div><div class="sp">${esc(s.p)}</div></div><div class="mins">${s.m}m</div></div>`).join("")}`).join("<hr class='sep'>")}</div></details>`;
+
+  // Printable journal
+  h+=`<div class="sect">One-page journal</div>
+   <div class="card">${journalHTML()}</div>
+   <button class="btn ghost" style="margin-top:12px" onclick="window.print()">Print / save as PDF</button>`;
+
+  // Data
+  h+=`<div class="sect">Data</div><div class="card">
+    <div class="small muted" style="margin-bottom:12px">iOS can clear an unused web app\u2019s storage. Export after big sessions \u2014 it\u2019s your real backup.</div>
+    <button class="btn ghost" onclick="exportData()">Export backup (JSON)</button>
+    <div style="height:10px"></div>
+    <button class="btn ghost" onclick="document.getElementById('importFile').click()">Import backup</button>
+    <input type="file" id="importFile" accept="application/json" class="hide" onchange="importData(this)">
+    <div style="height:10px"></div>
+    <button class="btn ghost" style="color:var(--bad);border-color:rgba(224,101,63,.4)" onclick="resetData()">Reset all data</button>
+  </div>
+  <div class="small muted" style="text-align:center;margin-top:18px">PracticeIQ \u00b7 GolfIQ suite \u00b7 local-first, offline-ready</div>`;
+  view.innerHTML=h;
+}
+function journalHTML(){
+  const t=today();
+  const rg=byType("range").find(r=>r.date===t);
+  const rgM=rg?rangeMetrics(rg):null;
+  const sp=byType("speed").find(r=>r.date===t);
+  const pt=byType("putting").find(r=>r.date===t);
+  const hm=byType("home").find(r=>r.date===t);
+  const flags=RECORDS.filter(r=>r.type==="redflag"&&r.date===t).map(r=>r.flag);
+  const row=(l,v)=>`<div class="row"><div class="g"><div class="d" style="font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;font-size:10px">${l}</div><div class="t" style="margin-top:2px">${v}</div></div></div>`;
+  return `<div class="eyebrow">${new Date(t+"T00:00:00").toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</div>
+    <div style="font-weight:600;color:var(--yellow);margin:6px 0 4px">${SWING_THOUGHT}</div>
+    ${row("Routine",hm?`${hm.mode} \u00b7 ${hm.steps.filter(Boolean).length}/${hm.steps.length} steps \u00b7 ${"\u2605".repeat(hm.adherence)||"unrated"}`:"\u2014")}
+    ${row("Range",rgM?`${rgM.total} balls \u00b7 grade ${gradeLetter(rgM.grade)} \u00b7 ${rg.tally.fat} fat \u00b7 ${rgM.ballFirst}% ball-first`:"\u2014")}
+    ${row("Speed",sp?`max ${Math.max(...sp.readings.map(x=>x.max||0))} mph \u00b7 ${sp.balanceHeld?"balance held":"balance dropped"}`:"\u2014")}
+    ${row("Putting",pt?`3ft ${pt.d3.makes}/${pt.d3.att} \u00b7 6ft ${pt.d6.makes}/${pt.d6.att} \u00b7 10ft ${pt.d10.makes}/${pt.d10.att}`:"\u2014")}
+    ${row("Red flags felt",flags.length?flags.join(", "):"none")}`;
+}
+async function logFlag(t){await dbPut({id:uid(),type:"redflag",date:today(),flag:t});await refresh();toast("Logged: "+t);}
+
+/* ============================ DATA EXPORT/IMPORT ============================ */
+function exportData(){
+  const blob=new Blob([JSON.stringify({app:"PracticeIQ",version:1,exported:new Date().toISOString(),records:RECORDS},null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="practiceiq-backup-"+today()+".json";a.click();URL.revokeObjectURL(a.href);
+  toast("Backup downloaded");
+}
+function importData(input){
+  const f=input.files[0];if(!f)return;const r=new FileReader();
+  r.onload=async()=>{try{const data=JSON.parse(r.result);const recs=data.records||data;
+    if(!Array.isArray(recs))throw 0;
+    for(const rec of recs)if(rec&&rec.id)await dbPut(rec);
+    await refresh();toast("Backup restored");render();
+  }catch(e){toast("Couldn\u2019t read that file");}input.value="";};
+  r.readAsText(f);
+}
+async function resetData(){
+  if(!confirm("Delete all PracticeIQ data on this device? Export a backup first if you want to keep it."))return;
+  await dbClear();await refresh();toast("All data cleared");render();
+}
+async function delRec(id){await dbDel(id);await refresh();render();}
+
+/* ============================ NAV / ROUTER ============================ */
+const TABS=[
+  {k:"today",l:"Today",icon:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'},
+  {k:"practice",l:"Practice",icon:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/>'},
+  {k:"rounds",l:"Rounds",icon:'<path d="M6 21V4l11 3-11 3"/><circle cx="6" cy="21" r="0.5"/>'},
+  {k:"plan",l:"Plan",icon:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 11l2 2 4-4"/>'},
+  {k:"more",l:"More",icon:'<line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="14" x2="20" y2="14"/><line x1="4" y1="20" x2="14" y2="20"/>'}
+];
+function renderNav(){
+  $("#nav").innerHTML=TABS.map(t=>`<button class="${TAB===t.k?'on':''}" onclick="go('${t.k}')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t.icon}</svg>
+    <span class="nl">${t.l}</span></button>`).join("");
+}
+function go(tab,sub){TAB=tab;if(sub)PRACTICE=sub;window.scrollTo(0,0);render();}
+function render(){
+  renderNav();
+  if(TAB==="today")renderToday();
+  else if(TAB==="practice")renderPractice();
+  else if(TAB==="rounds")renderRounds();
+  else if(TAB==="plan")renderPlan();
+  else renderMore();
+}
+
+/* ============================ BOOT ============================ */
+(async function(){
+  try{await refresh();}catch(e){RECORDS=[];}
+  render();
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
+  }
+})();
+</script>
+</body>
+</html>

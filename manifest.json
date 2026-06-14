@@ -1,0 +1,17 @@
+{
+  "name": "PracticeIQ",
+  "short_name": "PracticeIQ",
+  "description": "Practice, speed, putting and scoring tracker for the GolfIQ suite. One idea: pressure left, then swing.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A201A",
+  "theme_color": "#0E2A22",
+  "icons": [
+    { "src": "practiceiq-logo/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "practiceiq-logo/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "practiceiq-logo/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "practiceiq-logo/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
