@@ -44,17 +44,29 @@
     padding:calc(14px + env(safe-area-inset-top)) 18px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
   .brand{display:flex;align-items:center;gap:9px}
   .brand svg{width:30px;height:30px;display:block}
-  .brand .wm{font-size:21px;letter-spacing:-.03em;line-height:1}
-  .brand .wm b{font-weight:700;color:var(--fairway);margin-left:-.06em}
+  .brand .wm{display:inline-flex;align-items:baseline;gap:.14em;font-size:21px;letter-spacing:-.02em;line-height:1}
+  .brand .wm b{font-weight:700;color:var(--fairway);margin-left:0}
   .brand .wm span{font-weight:500;color:var(--ivory)}
   .suite{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
 
   /* Cue banner — the single flag-yellow pop */
-  .cue{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);
+  .cue{display:flex;align-items:flex-start;gap:11px;background:var(--card);border:1px solid var(--line);
     border-left:3px solid var(--yellow);border-radius:13px;padding:13px 15px;margin-bottom:18px}
-  .cue .dot{width:9px;height:9px;border-radius:50%;background:var(--yellow);flex:none;box-shadow:0 0 0 4px rgba(244,208,63,.14)}
-  .cue b{color:var(--yellow);font-weight:600}
-  .cue small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:1px}
+  .cue .dot{width:9px;height:9px;border-radius:50%;background:var(--yellow);flex:none;margin-top:8px;box-shadow:0 0 0 4px rgba(244,208,63,.14)}
+  .cue-body{flex:1;min-width:0}
+  .cue-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+  .cue-head small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .cue b,.cue .cue-txt{color:var(--yellow);font-weight:600;display:block;font-size:15px;line-height:1.35;cursor:pointer}
+  .cue-link{font-size:12px;color:var(--dim);padding:0;margin-top:4px;text-decoration:underline;text-underline-offset:3px}
+  .cue-input{width:100%;background:var(--felt-deep);border:1px solid var(--line2);color:var(--ivory);
+    border-radius:10px;padding:10px 12px;font-family:var(--ui);font-size:15px;font-weight:600;margin-top:4px}
+  .cue-input:focus{outline:none;border-color:var(--yellow)}
+  .cue-actions{display:flex;gap:8px;margin-top:10px}
+  .cue-sw{flex:none;width:44px;height:26px;border-radius:99px;background:var(--felt-deep);border:1px solid var(--line2);
+    padding:3px;position:relative;transition:.15s}
+  .cue-sw i{display:block;width:18px;height:18px;border-radius:50%;background:var(--dim);transition:.15s}
+  .cue-sw.on{background:rgba(244,208,63,.18);border-color:rgba(244,208,63,.35)}
+  .cue-sw.on i{transform:translateX(18px);background:var(--yellow)}
 
   /* Cards & metrics */
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
@@ -184,6 +196,8 @@
   .hide{display:none!important}
   details.ref{border:1px solid var(--line);border-radius:13px;padding:0 16px;margin-bottom:12px;background:var(--card)}
   details.ref summary{list-style:none;cursor:pointer;padding:15px 0;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  .ref-stack{margin-top:18px}
+  .ref-stack .sect{margin-top:0}
   details.ref summary::-webkit-details-marker{display:none}
   details.ref summary .x{color:var(--dim);font-family:var(--mono);font-size:18px;transition:.2s}
   details.ref[open] summary .x{transform:rotate(45deg)}
@@ -200,6 +214,21 @@
   .flag .ft{font-weight:500;font-size:14px}
   .flag .fd{font-size:12.5px;color:var(--dim);margin-top:2px}
   .flag .fc{font-family:var(--mono);font-size:11px;color:var(--yellow);margin-top:4px}
+
+  /* Home session v2 */
+  .focusprog{height:5px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:14px}
+  .focusprog i{display:block;height:100%;background:var(--fairway);border-radius:99px;transition:width .2s}
+  .focushdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}
+  .focushdr .fn{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+  .timer{font-family:var(--mono);font-size:28px;font-weight:700;text-align:center;margin:10px 0 14px;letter-spacing:.04em}
+  .timer.warn{color:var(--yellow)}
+  .steptrack{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+  .steptrack .tlbl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+  .steptrack .big{font-family:var(--mono);font-size:32px;font-weight:700;text-align:center;margin:6px 0 10px}
+  .steptrack .big.ok{color:var(--fairway)}
+  .homebar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .homebar .btn.sm{flex:1;min-width:120px}
+  .todayok{color:var(--fairway);font-size:13px;margin-top:10px}
 
   @media print{
     nav,header,.cue .dot,.btn,.seg{display:none!important}
@@ -237,7 +266,10 @@
 
 <script>
 /* ============================ CONTENT ============================ */
-const SWING_THOUGHT = "Pressure left, then swing.";
+const DEFAULT_SWING_THOUGHT = "Pressure left, then swing.";
+const SETTINGS_KEY = "settings";
+let CUE_SETTINGS = { text: DEFAULT_SWING_THOUGHT, show: true };
+let CUE_EDITING = false;
 
 /* The six red flags, drawn from the bad-shot triggers, each with a catch-it cue. */
 const RED_FLAGS = [
@@ -268,13 +300,13 @@ const PREPUTT = [
 const ROUTINE_DAILY = {
   name:"Daily routine", time:"10\u201315 min",
   steps:[
-    {t:"Pressure preview \u2014 no ball", m:2, p:"Pressure shift",
+    {t:"Pressure preview \u2014 no ball", m:2, p:"Pressure shift", track:"reps", target:10,
       d:"Feet together. As you start down, step into the lead foot so weight moves left before the body turns. 10 slow reps."},
-    {t:"Divot Board low-point ladder \u2014 foam balls", m:6, p:"Low-point / strike",
+    {t:"Divot Board low-point ladder \u2014 foam balls", m:6, p:"Low-point / strike", track:"divot", target:10,
       d:"Slow L-to-L swings at 70%. Goal: every strike mark starts at or after the ball. Count how many of 10 bottom out after the ball."},
-    {t:"Wait-at-the-top tempo \u2014 tempo trainer", m:3, p:"Sequencing",
+    {t:"Wait-at-the-top tempo \u2014 tempo trainer", m:3, p:"Sequencing", track:"reps", target:10,
       d:"Swing to the top, feel one beat of \u201cwait,\u201d let the arms fall before rotating. 8\u201310 reps."},
-    {t:"3-foot gate makes \u2014 Wellputt", m:3, p:"Putting",
+    {t:"3-foot gate makes \u2014 Wellputt", m:3, p:"Putting", track:"putt3", target:10,
       d:"10 putts through the gate with a full pre-putt routine each time. A miss resets you to zero."}
   ]
 };
@@ -282,14 +314,15 @@ const ROUTINE_EXT = {
   name:"Extended routine", time:"20\u201325 min",
   steps:[
     ...ROUTINE_DAILY.steps,
-    {t:"Strike-location block \u2014 Divot Board", m:5, p:"Face & strike",
+    {t:"Strike-location block \u2014 Divot Board", m:5, p:"Face & strike", track:"strike", target:15,
       d:"Same low-point feel; now also note heel / center / toe on the board. 15 foam balls, no scoring of direction \u2014 just where you caught it."},
-    {t:"Speed or driver block", m:4, p:"Speed / driver",
+    {t:"Speed or driver block", m:4, p:"Speed / driver", track:"reps", target:8,
       d:"Speed day: run the Skillz protocol. Otherwise: driver balance reps \u2014 tee height set, 80% swings, hold a balanced finish."},
-    {t:"Putting ladder + lag \u2014 Wellputt", m:5, p:"Putting / pace",
+    {t:"Putting ladder + lag \u2014 Wellputt", m:5, p:"Putting / pace", track:"puttLadder",
       d:"6-ft then 10-ft makes, then 4 lag putts from the far end finishing past the hole inside 3 ft."}
   ]
 };
+const HOME_DRAFT_KEY="home-draft";
 
 /* Skillz weekly speed schedule */
 const SPEED_PLAN = [
@@ -377,7 +410,35 @@ const fmtDate=(s)=>{const d=new Date(s+"T00:00:00");return d.toLocaleDateString(
 const byType=(t)=>RECORDS.filter(r=>r.type===t).sort((a,b)=>(a.date<b.date?1:-1));
 function planRec(){return RECORDS.find(r=>r.id==="plan-progress")||{id:"plan-progress",type:"meta",done:[]};}
 
-async function refresh(){RECORDS=await dbAll();}
+async function refresh(){RECORDS=await dbAll();loadCueSettings();}
+function loadCueSettings(){
+  const rec=RECORDS.find(r=>r.id===SETTINGS_KEY);
+  const text=(rec&&rec.text?String(rec.text):"").trim()||DEFAULT_SWING_THOUGHT;
+  CUE_SETTINGS={text,show:rec?rec.show!==false:true};
+}
+function swingThoughtText(){return CUE_SETTINGS.text||DEFAULT_SWING_THOUGHT;}
+function cueVisible(){return CUE_SETTINGS.show!==false;}
+function adherenceLabel(){return `How well did \u201c${swingThoughtText()}\u201d hold?`;}
+async function saveCueSettings(patch){
+  if(patch.text!==undefined)CUE_SETTINGS.text=(patch.text||"").trim()||DEFAULT_SWING_THOUGHT;
+  if(patch.show!==undefined)CUE_SETTINGS.show=!!patch.show;
+  await dbPut({id:SETTINGS_KEY,type:"meta",text:CUE_SETTINGS.text,show:CUE_SETTINGS.show});
+  CUE_EDITING=false;await refresh();render();
+}
+async function toggleCueShow(){
+  const next=!CUE_SETTINGS.show;
+  await saveCueSettings({show:next});
+  toast(next?"Swing thought shown":"Swing thought hidden");
+}
+function startCueEdit(){CUE_EDITING=true;render();setTimeout(()=>{const i=$("#cueInput");if(i){i.focus();i.select();}},40);}
+function cancelCueEdit(){CUE_EDITING=false;render();}
+async function saveCueText(){await saveCueSettings({text:$("#cueInput")?.value||""});toast("Swing thought saved");}
+async function saveMoreCueText(){await saveCueSettings({text:$("#moreCueText")?.value||""});toast("Swing thought saved");}
+async function resetCueText(){
+  if(!confirm("Reset swing thought to the default?"))return;
+  await saveCueSettings({text:DEFAULT_SWING_THOUGHT,show:true});toast("Reset to default");
+}
+
 
 /* ============================ METRICS ============================ */
 function rangeMetrics(r){
@@ -412,6 +473,72 @@ function streak(){
 }
 function nextPlanDay(){const done=new Set(planRec().done);for(const p of PLAN)if(!done.has(p.d))return p;return null;}
 
+/* ============================ HOME METRICS ============================ */
+function homeRoutine(mode){return mode==="extended"?ROUTINE_EXT:ROUTINE_DAILY;}
+function emptyStepData(step){
+  const d={done:false};
+  if(step.track==="reps")d.reps=0;
+  else if(step.track==="divot")d.after=0,d.total=0;
+  else if(step.track==="putt3")d.makes=0,d.att=0,d.streak=0,d.bestStreak=0;
+  else if(step.track==="strike")d.heel=0,d.center=0,d.toe=0;
+  else if(step.track==="puttLadder")d.d6m=0,d.d6a=0,d.d10m=0,d.d10a=0,d.lagSafe=0,d.lagAtt=0;
+  return d;
+}
+function normalizeHomeRec(r){
+  if(r.stepData)return r;
+  const steps=homeRoutine(r.mode||"daily").steps;
+  r.stepData=steps.map((s,i)=>({...emptyStepData(s),done:!!(r.steps&&r.steps[i])}));
+  return r;
+}
+function homeStepsDone(r){const n=normalizeHomeRec(r);return n.stepData.filter(s=>s.done).length;}
+function homeStepTotal(r){return homeRoutine(r.mode||"daily").steps.length;}
+function homeDivotPct(r){
+  const steps=homeRoutine(r.mode||"daily").steps;
+  let after=0,total=0;
+  normalizeHomeRec(r).stepData.forEach((d,i)=>{if(steps[i].track==="divot"){after+=d.after||0;total+=d.total||0;}});
+  return total?Math.round(after/total*100):null;
+}
+function homePutt3Pct(r){
+  const steps=homeRoutine(r.mode||"daily").steps;
+  let m=0,a=0;
+  normalizeHomeRec(r).stepData.forEach((d,i)=>{if(steps[i].track==="putt3"){m+=d.makes||0;a+=d.att||0;}});
+  return a?Math.round(m/a*100):null;
+}
+function homeSummary(r){
+  normalizeHomeRec(r);
+  const parts=[`${homeStepsDone(r)}/${homeStepTotal(r)} steps`];
+  if(r.adherence)parts.push("\u2605".repeat(r.adherence));
+  const dp=homeDivotPct(r);if(dp!=null)parts.push(`${dp}% divot after`);
+  const p3=homePutt3Pct(r);if(p3!=null)parts.push(`${p3}% 3-ft`);
+  return parts.join(" \u00b7 ");
+}
+function homeStreak(){
+  const days=new Set(byType("home").map(r=>r.date));
+  if(!days.size)return 0;
+  let n=0;const d=new Date();const iso=x=>x.toISOString().slice(0,10);
+  if(!days.has(iso(d))){d.setDate(d.getDate()-1);if(!days.has(iso(d)))return 0;}
+  while(days.has(iso(d))){n++;d.setDate(d.getDate()-1);}
+  return n;
+}
+function avgHomeAdherence(recs){
+  const vals=recs.filter(r=>r.adherence).map(r=>r.adherence);
+  return vals.length?+(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):null;
+}
+function stepMetricLine(stepDef,data){
+  if(stepDef.track==="reps"&&(data.reps||data.done))return `${data.reps||0}/${stepDef.target} reps`;
+  if(stepDef.track==="divot"&&data.total)return `${data.after}/${data.total} after ball`;
+  if(stepDef.track==="putt3"&&data.att)return `${data.makes}/${data.att} makes${data.bestStreak?` \u00b7 best ${data.bestStreak}`:""}`;
+  if(stepDef.track==="strike"){const t=(data.heel||0)+(data.center||0)+(data.toe||0);return t?`${data.center} ctr \u00b7 ${data.heel} heel \u00b7 ${data.toe} toe`:"";}
+  if(stepDef.track==="puttLadder"){
+    const bits=[];
+    if(data.d6a)bits.push(`6ft ${data.d6m}/${data.d6a}`);
+    if(data.d10a)bits.push(`10ft ${data.d10m}/${data.d10a}`);
+    if(data.lagAtt)bits.push(`lag ${data.lagSafe}/${data.lagAtt}`);
+    return bits.join(" \u00b7 ");
+  }
+  return data.done?"Done":"";
+}
+
 /* tiny sparkline */
 function spark(vals,{w=120,h=26,color="var(--fairway)",invert=false}={}){
   if(!vals||vals.length<2)return "";
@@ -436,58 +563,83 @@ const check=`<svg viewBox="0 0 24 24" fill="none" stroke="#06251a" stroke-width=
 
 /* ============================ RENDER: TODAY ============================ */
 function renderToday(){
-  const rg=byType("range"), pt=byType("putting"), latest=rg[0];
-  const m=latest?rangeMetrics(latest):null;
-  const fatSeries=rg.slice(0,8).reverse().map(r=>rangeMetrics(r).fatPer70);
-  const bfSeries=rg.slice(0,8).reverse().map(r=>rangeMetrics(r).ballFirst);
-  const puttSeries=pt.slice(0,8).reverse().map(puttMake).filter(v=>v!=null);
-  const lastPutt=pt.map(puttMake).find(v=>v!=null);
+  const hm=byType("home").map(normalizeHomeRec);
+  const latest=hm[0];
+  const rg=byType("range"), pt=byType("putting"), latestRg=rg[0];
+  const rm=latestRg?rangeMetrics(latestRg):null;
+  const divotSeries=hm.slice(0,8).reverse().map(homeDivotPct).filter(v=>v!=null);
+  const adhSeries=hm.slice(0,8).reverse().map(r=>r.adherence||0).filter(v=>v>0);
+  const putt3Series=hm.slice(0,8).reverse().map(homePutt3Pct).filter(v=>v!=null);
   const hc=handicap();
   const np=nextPlanDay();
   const done=planRec().done.length;
-  const fatClass=m? (m.fatPer70<2?"tgt-ok":m.fatPer70<4?"tgt-warn":"tgt-bad"):"";
+  const hs=homeStreak();
+  const divot=latest?homeDivotPct(latest):null;
+  const divotClass=divot==null?"":divot>=90?"tgt-ok":divot>=75?"tgt-warn":"tgt-bad";
+  const todayHome=hm.find(r=>r.date===today());
+  const fatClass=rm?(rm.fatPer70<2?"tgt-ok":rm.fatPer70<4?"tgt-warn":"tgt-bad"):"";
 
   let html=cueHTML();
 
-  // hero metric: fat shots / 70
   html+=`<div class="metrics">
     <div class="metric hero">
-      <div class="lbl">Fat shots \u00b7 per 70 balls</div>
-      <div class="val ${fatClass}">${m?m.fatPer70:"\u2014"}<s>target &lt; 2</s></div>
-      <div class="sub">${m?`Last session: ${latest.tally.fat} fat of ${m.total} scored \u00b7 ${fmtDate(latest.date)}`:"Log a range session to start tracking."}</div>
-      ${spark(fatSeries,{color:"var(--yellow)"})}
+      <div class="lbl">Home practice \u00b7 divot after ball</div>
+      <div class="val ${divotClass}">${divot!=null?divot:"\u2014"}<s>${divot!=null?"%":""}</s></div>
+      <div class="sub">${latest?`${latest.mode==="extended"?"Extended":"Daily"} \u00b7 ${homeSummary(latest)} \u00b7 ${fmtDate(latest.date)}`:"Start a home routine to track progress."}</div>
+      ${spark(divotSeries,{color:"var(--fairway)"})}
     </div>
     <div class="metric">
-      <div class="lbl">Ball-first %</div>
-      <div class="val">${m?m.ballFirst:"\u2014"}<s>%</s></div>
-      ${spark(bfSeries)}
+      <div class="lbl">Cue adherence</div>
+      <div class="val">${latest&&latest.adherence?latest.adherence:"\u2014"}<s>${latest&&latest.adherence?"/ 5 \u2605":""}</s></div>
+      <div class="sub">${avgHomeAdherence(hm.slice(0,7))?`7-day avg ${avgHomeAdherence(hm.slice(0,7))}\u2605`:"Rate after each session"}</div>
+      ${spark(adhSeries,{color:"var(--yellow)"})}
     </div>
     <div class="metric">
-      <div class="lbl">3\u20136 ft make %</div>
-      <div class="val">${lastPutt!=null?lastPutt:"\u2014"}<s>%</s></div>
-      ${spark(puttSeries)}
+      <div class="lbl">3-ft makes</div>
+      <div class="val">${latest?homePutt3Pct(latest)!==null?homePutt3Pct(latest):"\u2014":"\u2014"}<s>%</s></div>
+      ${spark(putt3Series)}
     </div>
     <div class="metric">
-      <div class="lbl">Handicap (est.)</div>
-      <div class="val">${hc!=null?hc:"\u2014"}</div>
-      <div class="sub">${hc!=null?"From logged rounds":"Add rounds with rating + slope"}</div>
-    </div>
-    <div class="metric">
-      <div class="lbl">Streak</div>
-      <div class="val">${streak()}<s>days</s></div>
-      <div class="sub">${done}/30 plan days done</div>
+      <div class="lbl">Home streak</div>
+      <div class="val">${hs}<s>days</s></div>
+      <div class="sub">${done}/30 plan days</div>
     </div>
   </div>`;
 
-  // Today's focus
+  html+=`<div class="sect">Home practice</div><div class="card">`;
+  if(todayHome){
+    html+=`<div class="todayok">\u2713 Logged today \u2014 ${homeSummary(todayHome)}</div>
+      <button class="btn ghost sm" style="margin-top:12px" onclick="startHomeRoutine('${todayHome.mode}',false)">Log another</button>`;
+  } else if(HOME_DRAFT){
+    html+=`<div class="muted small" style="margin-bottom:12px">Draft in progress \u2014 ${HOME_DRAFT.mode} \u00b7 step ${HOME_DRAFT.focusIdx+1}</div>
+      <button class="btn" onclick="go('practice','home')">Resume session</button>`;
+  } else {
+    const mode=np&&np.mode==="extended"?"extended":"daily";
+    html+=`<div class="muted small" style="margin-bottom:12px">${np?`Day ${np.d}: ${esc(np.focus)}`:"Pick a routine and work through it step by step."}</div>
+      <div class="homebar">
+        <button class="btn" onclick="startHomeRoutine('${mode}',true)">Start focus mode</button>
+        <button class="btn ghost sm" onclick="startHomeRoutine('daily',false)">Daily</button>
+        <button class="btn ghost sm" onclick="startHomeRoutine('extended',false)">Extended</button>
+      </div>`;
+  }
+  html+=`</div>`;
+
+  if(rm){
+    html+=`<div class="sect">Range (last session)</div>
+    <div class="card"><div class="row"><div class="g">
+      <div class="t">Fat ${rm.fatPer70} per 70 \u00b7 ${rm.ballFirst}% ball-first</div>
+      <div class="d">${fmtDate(latestRg.date)} \u00b7 grade ${gradeLetter(rm.grade)}</div>
+    </div><div class="pill">${rm.fatPer70<2?"on target":"tracking"}</div></div></div>`;
+  }
+
   if(np){
-    html+=`<div class="sect">Today \u2014 Day ${np.d}</div>
+    html+=`<div class="sect">Plan \u2014 Day ${np.d}</div>
     <div class="card">
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${pillFor(np)}</div>
       <div class="t" style="font-weight:600;font-size:16px;margin-top:9px">${esc(np.focus)}</div>
       <div class="d" style="margin-top:5px;font-size:13px;color:var(--dim)">${esc(np.note)}</div>
-      <div style="display:flex;gap:10px;margin-top:14px">
-        <button class="btn" onclick="go('practice','${np.mode==='extended'?'home':'home'}')">${np.mode==='extended'?'Extended routine':'Daily routine'}</button>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn sm" onclick="startHomeRoutine('${np.mode}',true)">${np.mode==="extended"?"Extended routine":"Daily routine"}</button>
         ${np.range?`<button class="btn ghost sm" onclick="go('practice','range')">Range</button>`:""}
         ${np.speed?`<button class="btn ghost sm" onclick="go('practice','speed')">Speed</button>`:""}
         ${np.round?`<button class="btn ghost sm" onclick="go('rounds')">Round</button>`:""}
@@ -497,8 +649,7 @@ function renderToday(){
     html+=`<div class="sect">Plan complete</div><div class="card"><div class="muted small">All 30 days done. Review the month and set your next single swing thought.</div></div>`;
   }
 
-  // Recent activity
-  const recent=RECORDS.filter(r=>r.type!=="meta").sort((a,b)=>(a.date<b.date?1:-1)).slice(0,5);
+  const recent=RECORDS.filter(r=>r.type!=="meta"&&r.id!==HOME_DRAFT_KEY&&r.id!==SETTINGS_KEY).sort((a,b)=>(a.date<b.date?1:-1)).slice(0,5);
   html+=`<div class="sect">Recent</div><div class="card">`;
   if(!recent.length) html+=`<div class="empty">Nothing logged yet. Your sessions show up here.</div>`;
   else html+=recent.map(rowFor).join("");
@@ -506,7 +657,24 @@ function renderToday(){
 
   view.innerHTML=html;
 }
-function cueHTML(){return `<div class="cue"><span class="dot"></span><div><small>Swing thought \u00b7 30 days</small><b>${SWING_THOUGHT}</b></div></div>`;}
+function cueHTML(){
+  if(!cueVisible())return "";
+  const txt=esc(swingThoughtText());
+  let body;
+  if(CUE_EDITING){
+    body=`<input class="cue-input" id="cueInput" type="text" maxlength="120" value="${txt}" placeholder="One swing thought"
+      onkeydown="if(event.key==='Enter')saveCueText();if(event.key==='Escape')cancelCueEdit()">
+      <div class="cue-actions"><button type="button" class="btn sm" onclick="saveCueText()">Save</button>
+      <button type="button" class="btn ghost sm" onclick="cancelCueEdit()">Cancel</button></div>`;
+  }else{
+    body=`<b class="cue-txt" onclick="startCueEdit()">${txt}</b>
+      <button type="button" class="cue-link" onclick="startCueEdit()">Edit</button>`;
+  }
+  return `<div class="cue"><span class="dot"></span><div class="cue-body">
+    <div class="cue-head"><small>Swing thought</small>
+      <button type="button" class="cue-sw on" onclick="toggleCueShow()" aria-label="Hide swing thought" aria-pressed="true"><i></i></button></div>
+    ${body}</div></div>`;
+}
 function pillFor(p){
   const map={full:["full","Full swing"],speed:["speed","Speed"],putt:["putt","Putting"],score:["score","Scoring"]};
   let out=`<span class="pill ${map[p.pillar][0]}">${map[p.pillar][1]}</span>`;
@@ -519,7 +687,7 @@ function pillFor(p){
 function rowFor(r){
   let title="",detail="";
   if(r.type==="range"){const m=rangeMetrics(r);title=`Range \u00b7 ${m.total} balls`;detail=`Grade ${gradeLetter(m.grade)} \u00b7 ${r.tally.fat} fat \u00b7 ${m.ballFirst}% ball-first`;}
-  else if(r.type==="home"){title=`${r.mode==="extended"?"Extended":"Daily"} routine`;detail=`${r.steps.filter(Boolean).length}/${r.steps.length} steps \u00b7 ${"\u2605".repeat(r.adherence||0)||"unrated"}`;}
+  else if(r.type==="home"){const n=normalizeHomeRec(r);title=`${n.mode==="extended"?"Extended":"Daily"} home`;detail=homeSummary(n);}
   else if(r.type==="speed"){const mx=Math.max(...r.readings.map(x=>x.max||0));title=`Speed \u00b7 max ${mx||"\u2014"} mph`;detail=`${r.balanceHeld?"Balance held":"Balance dropped"}`;}
   else if(r.type==="putting"){const p=puttMake(r);title=`Putting \u00b7 ${p!=null?p+"% short":"logged"}`;detail=`3ft ${r.d3.makes}/${r.d3.att} \u00b7 6ft ${r.d6.makes}/${r.d6.att} \u00b7 10ft ${r.d10.makes}/${r.d10.att}`;}
   else if(r.type==="round"){title=`Round \u00b7 ${r.score}`;detail=`${r.doubles} dbl+ \u00b7 ${r.threePutts} 3-putts`;}
@@ -540,7 +708,261 @@ function renderPractice(){
 function setPractice(k){PRACTICE=k;renderPracticeSub();
   document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.textContent.toLowerCase().startsWith(k.slice(0,4))||({home:"Home",range:"Range",speed:"Speed",putting:"Putting"})[k]===b.textContent));}
 
-let RANGE_DRAFT=null, HOME_DRAFT=null;
+let RANGE_DRAFT=null, HOME_DRAFT=null, HOME_TIMER_I=null;
+
+function freshHomeDraft(mode,view,focusIdx){
+  const R=homeRoutine(mode);
+  return {mode,view:view||"list",focusIdx:focusIdx||0,
+    stepData:R.steps.map(s=>emptyStepData(s)),adherence:0,flags:[],note:"",
+    timerSec:R.steps[focusIdx||0].m*60,timerRunning:false};
+}
+async function loadHomeDraftFromDB(){
+  const rec=RECORDS.find(r=>r.id===HOME_DRAFT_KEY);
+  if(rec&&rec.draft){
+    HOME_DRAFT=rec.draft;
+    const R=homeRoutine(HOME_DRAFT.mode);
+    if(HOME_DRAFT.stepData.length!==R.steps.length)
+      HOME_DRAFT.stepData=R.steps.map((s,i)=>HOME_DRAFT.stepData[i]||emptyStepData(s));
+  }
+}
+async function persistHomeDraft(){
+  if(!HOME_DRAFT)return;
+  await dbPut({id:HOME_DRAFT_KEY,type:"meta",draft:HOME_DRAFT});
+}
+async function clearHomeDraft(){
+  HOME_DRAFT=null;stopHomeTimer();
+  await dbDel(HOME_DRAFT_KEY).catch(()=>{});
+}
+function bumpHome(field,stepIdx,delta){
+  if(!HOME_DRAFT)return;
+  const d=HOME_DRAFT.stepData[stepIdx];
+  d[field]=Math.max(0,(d[field]||0)+delta);
+  if(navigator.vibrate)navigator.vibrate(8);
+  touchHomeDraft();
+}
+function touchHomeDraft(){
+  persistHomeDraft();
+  const run=HOME_DRAFT&&HOME_DRAFT.view==="focus"&&HOME_DRAFT.timerRunning;
+  renderPracticeSub();
+  if(run)startHomeTimer();
+}
+function stopHomeTimer(){if(HOME_TIMER_I){clearInterval(HOME_TIMER_I);HOME_TIMER_I=null;}}
+function homeTimerLabel(){
+  if(!HOME_DRAFT)return "0:00";
+  const s=Math.max(0,HOME_DRAFT.timerSec||0);
+  return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+}
+function startHomeTimer(){
+  if(!HOME_DRAFT)return;
+  HOME_DRAFT.timerRunning=true;
+  stopHomeTimer();
+  HOME_TIMER_I=setInterval(()=>{
+    if(!HOME_DRAFT||!HOME_DRAFT.timerRunning)return;
+    HOME_DRAFT.timerSec=Math.max(0,(HOME_DRAFT.timerSec||0)-1);
+    const el=document.getElementById("homeTimer");
+    if(el){el.textContent=homeTimerLabel();el.classList.toggle("warn",HOME_DRAFT.timerSec<=30);}
+    if(HOME_DRAFT.timerSec<=0){HOME_DRAFT.timerRunning=false;stopHomeTimer();}
+    persistHomeDraft();
+  },1000);
+}
+function pauseHomeTimer(){if(HOME_DRAFT){HOME_DRAFT.timerRunning=false;stopHomeTimer();touchHomeDraft();}}
+function resetHomeTimer(){
+  if(!HOME_DRAFT)return;
+  const R=homeRoutine(HOME_DRAFT.mode);
+  HOME_DRAFT.timerSec=R.steps[HOME_DRAFT.focusIdx].m*60;
+  HOME_DRAFT.timerRunning=false;stopHomeTimer();touchHomeDraft();
+}
+function startHomeRoutine(mode,focus){
+  TAB="practice";PRACTICE="home";
+  HOME_DRAFT=freshHomeDraft(mode,focus?"focus":"list",0);
+  persistHomeDraft();render();
+}
+function setHomeView(v){
+  if(!HOME_DRAFT)return;
+  HOME_DRAFT.view=v;
+  if(v==="focus"){resetHomeTimer();}
+  else stopHomeTimer();
+  touchHomeDraft();
+}
+function setHomeFocus(i){
+  if(!HOME_DRAFT)return;
+  HOME_DRAFT.focusIdx=i;resetHomeTimer();touchHomeDraft();
+}
+function homeStepDone(i,adv){
+  if(!HOME_DRAFT)return;
+  HOME_DRAFT.stepData[i].done=true;
+  const R=homeRoutine(HOME_DRAFT.mode);
+  if(adv&&i<R.steps.length-1){HOME_DRAFT.focusIdx=i+1;resetHomeTimer();}
+  touchHomeDraft();
+}
+function putt3MakeTap(i,made){
+  if(!HOME_DRAFT)return;
+  const d=HOME_DRAFT.stepData[i];
+  d.att=(d.att||0)+1;
+  if(made){d.makes=(d.makes||0)+1;d.streak=(d.streak||0)+1;d.bestStreak=Math.max(d.bestStreak||0,d.streak);}
+  else d.streak=0;
+  if(navigator.vibrate)navigator.vibrate(8);
+  touchHomeDraft();
+}
+
+function homeTrackHTML(stepDef,data,i,compact){
+  const t=stepDef.track,target=stepDef.target;
+  if(t==="reps"){
+    return `<div class="steptrack"><div class="tlbl">Reps \u00b7 target ${target}</div>
+      <div class="counter"><div class="cc"><button onclick="bumpHome('reps',${i},-1)">\u2212</button>
+      <span class="num">${data.reps||0}</span><button onclick="bumpHome('reps',${i},1)">+</button></div>
+      <span class="mono small ${(data.reps||0)>=target?'tgt-ok':''}">${data.reps||0}/${target}</span></div></div>`;
+  }
+  if(t==="divot"){
+    return `<div class="steptrack"><div class="tlbl">After the ball \u00b7 of ${target} strikes</div>
+      <div class="grid2">
+        <div class="counter"><span class="mono small">After</span><div class="cc"><button onclick="bumpHome('after',${i},-1)">\u2212</button>
+        <span class="num">${data.after||0}</span><button onclick="bumpHome('after',${i},1)">+</button></div></div>
+        <div class="counter"><span class="mono small">Total</span><div class="cc"><button onclick="bumpHome('total',${i},-1)">\u2212</button>
+        <span class="num">${data.total||0}</span><button onclick="bumpHome('total',${i},1)">+</button></div></div>
+      </div>
+      ${data.total?`<div class="small muted" style="margin-top:8px">${Math.round((data.after||0)/data.total*100)}% after ball</div>`:""}</div>`;
+  }
+  if(t==="putt3"){
+    return `<div class="steptrack"><div class="tlbl">3-ft gate \u00b7 target ${target}</div>
+      <div class="taps">
+        <button class="tap pure" onclick="putt3MakeTap(${i},true)"><div class="tn">${data.makes||0}</div><div class="tl">Make</div></button>
+        <button class="tap fat" onclick="putt3MakeTap(${i},false)"><div class="tn">${(data.att||0)-(data.makes||0)}</div><div class="tl">Miss</div></button>
+      </div>
+      <div class="small muted" style="margin-top:8px">${data.att||0} attempts \u00b7 streak ${data.streak||0} \u00b7 best ${data.bestStreak||0}</div></div>`;
+  }
+  if(t==="strike"){
+    return `<div class="steptrack"><div class="tlbl">Strike location \u00b7 ${target} balls</div>
+      ${["center","heel","toe"].map(k=>`<div class="counter" style="margin-top:6px"><span class="mono small" style="min-width:52px">${k}</span>
+        <div class="cc"><button onclick="bumpHome('${k}',${i},-1)">\u2212</button><span class="num">${data[k]||0}</span><button onclick="bumpHome('${k}',${i},1)">+</button></div></div>`).join("")}
+      </div>`;
+  }
+  if(t==="puttLadder"){
+    return `<div class="steptrack"><div class="tlbl">Putting ladder + lag</div>
+      ${[["d6m","d6a","6-ft makes"],["d10m","d10a","10-ft makes"],["lagSafe","lagAtt","Lag safe"]].map(([m,a,lbl])=>`
+        <div style="margin-top:8px"><div class="mono small" style="color:var(--dim);margin-bottom:4px">${lbl}</div><div class="grid2">
+          <div class="counter"><span class="mono small">+</span><div class="cc"><button onclick="bumpHome('${m}',${i},-1)">\u2212</button>
+          <span class="num">${data[m]||0}</span><button onclick="bumpHome('${m}',${i},1)">+</button></div></div>
+          <div class="counter"><span class="mono small">att</span><div class="cc"><button onclick="bumpHome('${a}',${i},-1)">\u2212</button>
+          <span class="num">${data[a]||0}</span><button onclick="bumpHome('${a}',${i},1)">+</button></div></div>
+        </div></div>`).join("")}</div>`;
+  }
+  return "";
+}
+
+function homeFinishHTML(){
+  return `<label class="f">${esc(adherenceLabel())}</label>
+    <div class="stars">${[1,2,3,4,5].map(n=>`<button class="${HOME_DRAFT.adherence>=n?'on':''}" onclick="setHomeStars(${n})">\u2605</button>`).join("")}</div>
+    <label class="f">Red flag felt?</label>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px">
+      ${RED_FLAGS.map(f=>`<button class="pill ${HOME_DRAFT.flags.includes(f.t)?'score':''}" style="cursor:pointer;border-style:solid" onclick="homeFlag('${esc(f.t).replace(/'/g,"\\'")}')">${esc(f.t)}</button>`).join("")}
+    </div>
+    <label class="f">Note (optional)</label>
+    <textarea placeholder="What felt good? Any red flag creeping in?" oninput="HOME_DRAFT.note=this.value;persistHomeDraft()">${esc(HOME_DRAFT.note||"")}</textarea>
+    <div style="margin-top:16px"><button class="btn" onclick="saveHome()">Save home session</button></div>`;
+}
+
+function homeFocusForm(){
+  const R=homeRoutine(HOME_DRAFT.mode), i=HOME_DRAFT.focusIdx, s=R.steps[i], d=HOME_DRAFT.stepData[i];
+  const pct=Math.round((i+1)/R.steps.length*100);
+  let h=`<div class="focusprog"><i style="width:${pct}%"></i></div>
+    <div class="focushdr"><span class="fn">Step ${i+1} of ${R.steps.length}</span>
+      <button class="btn ghost sm" onclick="setHomeView('list')">All steps</button></div>
+    <div class="card">
+      <div class="sp">${esc(s.p)} \u00b7 ${s.m} min</div>
+      ${cueVisible()?`<div class="mono small" style="color:var(--yellow);margin:8px 0 2px">${esc(swingThoughtText())}</div>`:""}
+      <div class="st" style="font-weight:600;font-size:17px;margin-top:8px">${esc(s.t)}</div>
+      <div class="sd" style="margin-top:8px">${esc(s.d)}</div>
+      <div class="timer ${HOME_DRAFT.timerSec<=30?'warn':''}" id="homeTimer">${homeTimerLabel()}</div>
+      <div class="homebar" style="margin-bottom:0">
+        <button class="btn ghost sm" onclick="startHomeTimer()">Start</button>
+        <button class="btn ghost sm" onclick="pauseHomeTimer()">Pause</button>
+        <button class="btn ghost sm" onclick="resetHomeTimer()">Reset</button>
+      </div>
+      ${homeTrackHTML(s,d,i,true)}
+    </div>
+    <div class="homebar" style="margin-top:14px">
+      ${i>0?`<button class="btn ghost sm" onclick="setHomeFocus(${i-1})">Back</button>`:"<span></span>"}
+      ${i<R.steps.length-1?`<button class="btn" onclick="homeStepDone(${i},true)">Done \u2014 next</button>`
+        :`<button class="btn" onclick="homeStepDone(${i},false);setHomeView('list')">Done \u2014 finish</button>`}
+    </div>`;
+  if(i===R.steps.length-1)h+=`<div style="margin-top:18px">${homeFinishHTML()}</div>`;
+  return h;
+}
+
+function homeListForm(){
+  const R=homeRoutine(HOME_DRAFT.mode);
+  let h=`<div class="seg" style="margin-top:2px">
+     <button class="${HOME_DRAFT.mode==='daily'?'on':''}" onclick="setHomeMode('daily')">Daily \u00b7 10\u201315</button>
+     <button class="${HOME_DRAFT.mode==='extended'?'on':''}" onclick="setHomeMode('extended')">Extended \u00b7 20\u201325</button>
+   </div>
+   <div class="homebar">
+     <button class="btn yellow sm" onclick="setHomeView('focus')">Focus mode</button>
+     <button class="btn ghost sm" onclick="discardHomeDraft()">Discard draft</button>
+   </div>
+   <div class="card">`;
+  h+=R.steps.map((s,i)=>{const d=HOME_DRAFT.stepData[i], ml=stepMetricLine(s,d);
+    return `<div class="step ${d.done?'done':''}">
+      <div class="chk ${d.done?'on':''}" onclick="toggleHomeStep(${i})">${check}</div>
+      <div class="sg" style="flex:1"><div class="st">${esc(s.t)}</div><div class="sd">${esc(s.d)}</div>
+        <div class="sp">${esc(s.p)}</div>${ml?`<div class="mono small" style="margin-top:5px;color:var(--fairway)">${esc(ml)}</div>`:""}
+        ${homeTrackHTML(s,d,i,false)}
+      </div>
+      <div class="mins">${s.m}m</div></div>`;}).join("");
+  h+=`</div>${homeFinishHTML()}`;
+  return h;
+}
+
+function homeForm(){
+  if(!HOME_DRAFT)HOME_DRAFT=freshHomeDraft("daily","list",0);
+  if(HOME_DRAFT.view==="focus")return homeFocusForm();
+  stopHomeTimer();
+  return homeListForm();
+}
+async function setHomeMode(m){
+  HOME_DRAFT=freshHomeDraft(m,HOME_DRAFT.view,0);
+  await persistHomeDraft();renderPracticeSub();
+}
+function toggleHomeStep(i){
+  HOME_DRAFT.stepData[i].done=!HOME_DRAFT.stepData[i].done;
+  touchHomeDraft();
+}
+function setHomeStars(n){
+  HOME_DRAFT.adherence=HOME_DRAFT.adherence===n?0:n;
+  touchHomeDraft();
+}
+function homeFlag(t){
+  const i=HOME_DRAFT.flags.indexOf(t);
+  if(i>=0)HOME_DRAFT.flags.splice(i,1);else HOME_DRAFT.flags.push(t);
+  touchHomeDraft();
+}
+async function discardHomeDraft(){
+  if(!confirm("Discard in-progress home session?"))return;
+  await clearHomeDraft();renderPracticeSub();
+}
+async function maybeMarkPlanDay(savedMode){
+  const np=nextPlanDay();if(!np)return;
+  const modeOk=np.mode===savedMode||(!np.range&&!np.speed&&!np.round);
+  if(!modeOk)return;
+  if(confirm(`Mark plan Day ${np.d} complete?\n${np.focus}`)){
+    const rec=planRec();const set=new Set(rec.done);set.add(np.d);
+    await dbPut({id:"plan-progress",type:"meta",done:[...set].sort((a,b)=>a-b)});
+  }
+}
+async function saveHome(){
+  if(!HOME_DRAFT)return;
+  const doneCt=HOME_DRAFT.stepData.filter(s=>s.done).length;
+  if(!doneCt&&!HOME_DRAFT.adherence){toast("Complete a step or rate adherence");return;}
+  const savedMode=HOME_DRAFT.mode;
+  const rec={id:uid(),type:"home",date:today(),mode:savedMode,
+    stepData:HOME_DRAFT.stepData.map(s=>({...s})),adherence:HOME_DRAFT.adherence,
+    flags:HOME_DRAFT.flags.slice(),note:HOME_DRAFT.note||"",swingThought:swingThoughtText()};
+  await dbPut(rec);
+  for(const f of rec.flags)await dbPut({id:uid(),type:"redflag",date:today(),flag:f});
+  await clearHomeDraft();await refresh();
+  toast("Home session saved");await maybeMarkPlanDay(savedMode);renderPracticeSub();
+}
+
 function renderPracticeSub(){
   const el=$("#psub");
   if(PRACTICE==="home")el.innerHTML=homeForm();
@@ -548,35 +970,6 @@ function renderPracticeSub(){
   else if(PRACTICE==="speed")el.innerHTML=speedForm();
   else el.innerHTML=puttForm();
 }
-
-/* --- Home routine --- */
-function homeForm(){
-  if(!HOME_DRAFT)HOME_DRAFT={mode:"daily",steps:ROUTINE_DAILY.steps.map(()=>false),adherence:0,note:""};
-  const R=HOME_DRAFT.mode==="extended"?ROUTINE_EXT:ROUTINE_DAILY;
-  if(HOME_DRAFT.steps.length!==R.steps.length)HOME_DRAFT.steps=R.steps.map(()=>false);
-  let h=`<div class="seg" style="margin-top:2px">
-     <button class="${HOME_DRAFT.mode==='daily'?'on':''}" onclick="setHomeMode('daily')">Daily \u00b7 10\u201315</button>
-     <button class="${HOME_DRAFT.mode==='extended'?'on':''}" onclick="setHomeMode('extended')">Extended \u00b7 20\u201325</button>
-   </div>
-   <div class="card">`;
-  h+=R.steps.map((s,i)=>`<div class="step ${HOME_DRAFT.steps[i]?'done':''}" onclick="toggleHomeStep(${i})">
-      <div class="chk ${HOME_DRAFT.steps[i]?'on':''}">${check}</div>
-      <div class="sg"><div class="st">${esc(s.t)}</div><div class="sd">${esc(s.d)}</div><div class="sp">${esc(s.p)}</div></div>
-      <div class="mins">${s.m} min</div></div>`).join("");
-  h+=`</div>
-   <label class="f">How well did \u201cpressure left, then swing\u201d hold today?</label>
-   <div class="stars">${[1,2,3,4,5].map(n=>`<button class="${HOME_DRAFT.adherence>=n?'on':''}" onclick="setHomeStars(${n})">\u2605</button>`).join("")}</div>
-   <label class="f">Note (optional)</label>
-   <textarea id="homeNote" placeholder="What felt good? Any red flag creeping in?" oninput="HOME_DRAFT.note=this.value">${esc(HOME_DRAFT.note)}</textarea>
-   <div style="margin-top:16px"><button class="btn" onclick="saveHome()">Save routine</button></div>`;
-  return h;
-}
-function setHomeMode(m){HOME_DRAFT.mode=m;HOME_DRAFT.steps=(m==="extended"?ROUTINE_EXT:ROUTINE_DAILY).steps.map(()=>false);renderPracticeSub();}
-function toggleHomeStep(i){HOME_DRAFT.steps[i]=!HOME_DRAFT.steps[i];renderPracticeSub();}
-function setHomeStars(n){HOME_DRAFT.adherence=HOME_DRAFT.adherence===n?0:n;renderPracticeSub();}
-async function saveHome(){
-  await dbPut({id:uid(),type:"home",date:today(),mode:HOME_DRAFT.mode,steps:HOME_DRAFT.steps.slice(),adherence:HOME_DRAFT.adherence,note:HOME_DRAFT.note});
-  HOME_DRAFT=null;await refresh();toast("Routine saved");renderPracticeSub();}
 
 /* --- Range 70-ball --- */
 function rangeForm(){
@@ -715,7 +1108,7 @@ function renderRounds(){
     <div><label class="f">Up-and-down chances</label><input type="number" inputmode="numeric" id="rdUdA" placeholder="Greens missed near pin"></div>
     <hr class="sep">
     <div class="eyebrow">Round review</div>
-    <label class="f">What sequenced well?</label><textarea id="rdGood" placeholder="When did \u201cpressure left\u201d show up?"></textarea>
+    <label class="f">What sequenced well?</label><textarea id="rdGood" placeholder="When did your swing thought show up?"></textarea>
     <label class="f">Where did you revert? (which red flag)</label><textarea id="rdBad" placeholder="The miss pattern that cost you"></textarea>
     <label class="f">One thing for next round</label><textarea id="rdNext" placeholder="Single focus"></textarea>
     <div style="margin-top:16px"><button class="btn" onclick="saveRound()">Save round</button></div>
@@ -797,6 +1190,21 @@ function checkpointHTML(){
 /* ============================ RENDER: MORE ============================ */
 function renderMore(){
   let h=cueHTML();
+  h+=`<div class="sect">Swing thought settings</div><div class="card">
+    <label class="f">Your one thought</label>
+    <input type="text" id="moreCueText" maxlength="120" value="${esc(swingThoughtText())}" placeholder="One swing thought"
+      onkeydown="if(event.key==='Enter')saveMoreCueText()">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px">
+      <span class="small">Show banner on every screen</span>
+      <button type="button" class="cue-sw ${cueVisible()?"on":""}" onclick="toggleCueShow()" aria-pressed="${cueVisible()}"><i></i></button>
+    </div>
+    <div class="homebar" style="margin-top:14px">
+      <button type="button" class="btn sm" onclick="saveMoreCueText()">Save</button>
+      <button type="button" class="btn ghost sm" onclick="resetCueText()">Reset default</button>
+    </div>
+    <div class="small muted" style="margin-top:10px">Tap the banner to edit quickly when shown. Home sessions save which thought you used.</div>
+  </div>`;
+  h+=`<div class="ref-stack"><div class="sect">Reference</div>`;
   h+=`<details class="ref" open><summary>Pre-shot routine \u2014 full swing<span class="x">+</span></summary>
     <div class="body"><ul class="ol">${PRESHOT.map(s=>`<li>${esc(s)}</li>`).join("")}</ul></div></details>`;
   h+=`<details class="ref"><summary>Pre-putt routine<span class="x">+</span></summary>
@@ -808,7 +1216,7 @@ function renderMore(){
     </div></details>`;
   h+=`<details class="ref"><summary>Daily &amp; extended routines<span class="x">+</span></summary>
     <div class="body">${[ROUTINE_DAILY,ROUTINE_EXT].map(R=>`<div class="eyebrow" style="margin:4px 0 6px;color:var(--yellow)">${R.name} \u00b7 ${R.time}</div>
-      ${R.steps.map(s=>`<div class="step"><div class="sg"><div class="st">${esc(s.t)}</div><div class="sd">${esc(s.d)}</div><div class="sp">${esc(s.p)}</div></div><div class="mins">${s.m}m</div></div>`).join("")}`).join("<hr class='sep'>")}</div></details>`;
+      ${R.steps.map(s=>`<div class="step"><div class="sg"><div class="st">${esc(s.t)}</div><div class="sd">${esc(s.d)}</div><div class="sp">${esc(s.p)}</div></div><div class="mins">${s.m}m</div></div>`).join("")}`).join("<hr class='sep'>")}</div></details></div>`;
 
   // Printable journal
   h+=`<div class="sect">One-page journal</div>
@@ -838,8 +1246,8 @@ function journalHTML(){
   const flags=RECORDS.filter(r=>r.type==="redflag"&&r.date===t).map(r=>r.flag);
   const row=(l,v)=>`<div class="row"><div class="g"><div class="d" style="font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;font-size:10px">${l}</div><div class="t" style="margin-top:2px">${v}</div></div></div>`;
   return `<div class="eyebrow">${new Date(t+"T00:00:00").toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}</div>
-    <div style="font-weight:600;color:var(--yellow);margin:6px 0 4px">${SWING_THOUGHT}</div>
-    ${row("Routine",hm?`${hm.mode} \u00b7 ${hm.steps.filter(Boolean).length}/${hm.steps.length} steps \u00b7 ${"\u2605".repeat(hm.adherence)||"unrated"}`:"\u2014")}
+    ${cueVisible()?`<div style="font-weight:600;color:var(--yellow);margin:6px 0 4px">${esc(swingThoughtText())}</div>`:""}
+    ${row("Routine",hm?homeSummary(normalizeHomeRec(hm)):"\u2014")}
     ${row("Range",rgM?`${rgM.total} balls \u00b7 grade ${gradeLetter(rgM.grade)} \u00b7 ${rg.tally.fat} fat \u00b7 ${rgM.ballFirst}% ball-first`:"\u2014")}
     ${row("Speed",sp?`max ${Math.max(...sp.readings.map(x=>x.max||0))} mph \u00b7 ${sp.balanceHeld?"balance held":"balance dropped"}`:"\u2014")}
     ${row("Putting",pt?`3ft ${pt.d3.makes}/${pt.d3.att} \u00b7 6ft ${pt.d6.makes}/${pt.d6.att} \u00b7 10ft ${pt.d10.makes}/${pt.d10.att}`:"\u2014")}
@@ -865,6 +1273,7 @@ function importData(input){
 }
 async function resetData(){
   if(!confirm("Delete all PracticeIQ data on this device? Export a backup first if you want to keep it."))return;
+  HOME_DRAFT=null;stopHomeTimer();
   await dbClear();await refresh();toast("All data cleared");render();
 }
 async function delRec(id){await dbDel(id);await refresh();render();}
@@ -894,7 +1303,7 @@ function render(){
 
 /* ============================ BOOT ============================ */
 (async function(){
-  try{await refresh();}catch(e){RECORDS=[];}
+  try{await refresh();await loadHomeDraftFromDB();}catch(e){RECORDS=[];}
   render();
   if("serviceWorker" in navigator){
     window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
