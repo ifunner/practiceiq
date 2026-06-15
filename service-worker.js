@@ -1,9 +1,10 @@
 // PracticeIQ service worker — app-shell cache for offline use on the course.
 // Bump CACHE on each deploy (v3, v4, …) so installed PWAs pick up updates.
-const CACHE = 'practiceiq-v2';
+const CACHE = 'practiceiq-v3';
 const SHELL = [
   './',
   './index.html',
+  './golfiq.css',
   './manifest.json',
   './practiceiq-logo/mark.svg',
   './practiceiq-logo/mark-light.svg',

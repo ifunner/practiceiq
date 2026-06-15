@@ -6,7 +6,7 @@
 <title>PracticeIQ</title>
 <meta name="description" content="Pressure left, then swing. Practice, speed, putting and scoring tracker.">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0E2A22">
+<meta name="theme-color" content="#0A201A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PracticeIQ">
@@ -15,27 +15,33 @@
 <link rel="apple-touch-icon" href="practiceiq-logo/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<!-- Shared GolfIQ design system (vendored — edit in golfiq-design-system/ and re-sync).
+     Linked before the inline styles so PracticeIQ's component rules layer on top. -->
+<link rel="stylesheet" href="golfiq.css">
 <style>
+  /* Tokens, page background, and shared primitives come from golfiq.css.
+     Only PracticeIQ-specific token aliases live here. */
   :root{
-    --felt:#0E2A22; --felt-deep:#0A201A;
-    --panel:#10322A; --panel-hi:#143a30;
-    --ink:#F2EBDA; --ink-dim:#9DB3A6; --sage:#6E8F7E;
-    --line:#26483D; --flag:#F4D03F; --path:#46C98A; --red:#E06A5C; --uphill:#7FC8FF;
-    --r:16px;
-    --ivory:var(--ink); --dim:var(--ink-dim);
-    --fairway:var(--path); --fairway-deep:#1F8F5F;
-    --yellow:var(--flag); --yellow-deep:#D9AE1B;
+    --dim:var(--ink-dim);
     --card:var(--panel); --card2:var(--panel-hi);
     --bad:var(--red); --ok:var(--path);
     --line2:#325a4d;
-    --ui:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;
-    --mono:'JetBrains Mono',ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
+  /* Reconcile the shared golfiq.css base with PracticeIQ's reset-based buttons
+     and bespoke .app/.wrap layout, so shared base rules don't leak through. */
+  .app{padding:0}
+  header{margin-bottom:0}
+  button{padding:0;border-radius:0}
+  details summary::after{content:none}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{background:var(--felt-deep)}
   html,body{margin:0;overscroll-behavior-y:none}
   body{
-    background:var(--felt-deep);
+    min-height:100vh;
+    background-color:var(--felt-deep);
+    background-image:radial-gradient(120% 60% at 50% -10%, #16382d 0%, var(--felt) 42%, var(--felt-deep) 100%);
+    background-attachment:fixed;
     color:var(--ink); font-family:var(--ui); font-size:13px;
     -webkit-font-smoothing:antialiased; line-height:1.45;
     padding-bottom:calc(86px + env(safe-area-inset-bottom));
@@ -49,7 +55,7 @@
   a{color:var(--path)}
 
   /* Header */
-  header{position:sticky;top:0;z-index:20;background:linear-gradient(var(--felt-deep),var(--felt-deep) 70%,transparent);
+  header{position:sticky;top:0;z-index:20;background:transparent;
     padding:calc(14px + env(safe-area-inset-top)) 14px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
   .brand{display:flex;align-items:center;gap:9px}
   .brand svg{width:30px;height:30px;display:block}
@@ -103,7 +109,7 @@
   .pill.full{background:rgba(70,201,138,.13);border-color:transparent;color:var(--path)}
   .pill.speed{background:rgba(244,208,63,.13);border-color:transparent;color:var(--flag)}
   .pill.putt{background:rgba(242,235,218,.08);color:var(--ink)}
-  .pill.score{background:rgba(224,106,92,.14);border-color:transparent;color:#f0a182}
+  .pill.score{background:rgba(224,106,92,.14);border-color:transparent;color:var(--red)}
 
   /* Section heads */
   .sect{font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);margin:26px 2px 12px}
