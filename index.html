@@ -28,30 +28,15 @@
     --bad:var(--red); --ok:var(--path);
     --line2:#325a4d;
   }
-  /* Reconcile the shared golfiq.css base with PracticeIQ's reset-based buttons
-     and bespoke .app/.wrap layout, so shared base rules don't leak through. */
+  /* PracticeIQ layout overrides on the shared shell. */
   .app{padding:0}
   header{margin-bottom:0}
-  button{padding:0;border-radius:0}
   details summary::after{content:none}
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{background:var(--felt-deep)}
-  html,body{margin:0;overscroll-behavior-y:none}
-  body{
-    min-height:100vh;
-    background-color:var(--felt-deep);
-    background-image:radial-gradient(120% 60% at 50% -10%, #16382d 0%, var(--felt) 42%, var(--felt-deep) 100%);
-    background-attachment:fixed;
-    color:var(--ink); font-family:var(--ui); font-size:13px;
-    -webkit-font-smoothing:antialiased; line-height:1.45;
-    padding-bottom:calc(86px + env(safe-area-inset-bottom));
-  }
-  .app{max-width:520px;margin:0 auto;min-height:100vh}
-  .wrap{padding:14px 14px 32px}
+  body{font-size:13px;line-height:1.45}
+  .wrap{padding:14px 14px calc(86px + env(safe-area-inset-bottom) + 32px)}
   .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
   .eyebrow{font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--sage)}
   h1,h2,h3{margin:0;letter-spacing:-.01em}
-  button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   a{color:var(--path)}
 
   /* Header — scrolls with content (not sticky) */
@@ -62,7 +47,6 @@
   .brand .wm{display:inline-flex;align-items:baseline;gap:.14em;font-size:21px;letter-spacing:-.028em;line-height:1}
   .brand .wm b{font-weight:700;color:var(--path);margin-left:0}
   .brand .wm span{font-weight:500;color:var(--ink)}
-  .suite{font-size:10px;font-weight:600;color:var(--sage);letter-spacing:.12em;text-transform:uppercase}
 
   /* Cue banner — flag-yellow accent rail */
   .cue{display:flex;align-items:flex-start;gap:11px;background:var(--panel);border:1px solid var(--line);
@@ -73,13 +57,13 @@
   .cue-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
   .cue-head small{display:block;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--sage)}
   .cue b,.cue .cue-txt{color:var(--flag);font-weight:600;display:block;font-size:15px;line-height:1.35;cursor:pointer}
-  .cue-link{font-size:12px;color:var(--ink-dim);padding:0;margin-top:4px;text-decoration:underline;text-underline-offset:3px}
+  .cue-link{font-size:12px;color:var(--ink-dim);padding:0;margin-top:4px;text-decoration:underline;text-underline-offset:3px;background:none;border:none;width:auto}
   .cue-input{width:100%;background:var(--felt-deep);border:1px solid var(--line);color:var(--ink);
     border-radius:11px;padding:10px 12px;font-family:var(--ui);font-size:15px;font-weight:600;margin-top:4px}
   .cue-input:focus{outline:none;border-color:var(--flag)}
   .cue-actions{display:flex;gap:8px;margin-top:10px}
   .cue-sw{flex:none;width:44px;height:26px;border-radius:99px;background:var(--felt-deep);border:1px solid var(--line);
-    padding:3px;position:relative;transition:.15s}
+    padding:3px;position:relative;transition:.15s;cursor:pointer}
   .cue-sw i{display:block;width:18px;height:18px;border-radius:50%;background:var(--sage);transition:.15s}
   .cue-sw.on{background:rgba(244,208,63,.18);border-color:var(--flag)}
   .cue-sw.on i{transform:translateX(18px);background:var(--flag)}
@@ -105,26 +89,18 @@
   .row .g{flex:1;min-width:0}
   .row .t{font-weight:500}
   .row .d{font-size:12px;color:var(--ink-dim);margin-top:2px}
-  .pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--ink-dim);white-space:nowrap}
-  .pill.full{background:rgba(70,201,138,.13);border-color:transparent;color:var(--path)}
-  .pill.speed{background:rgba(244,208,63,.13);border-color:transparent;color:var(--flag)}
-  .pill.putt{background:rgba(242,235,218,.08);color:var(--ink)}
-  .pill.score{background:rgba(224,106,92,.14);border-color:transparent;color:var(--red)}
+  .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--ink-dim);white-space:nowrap}
+  .tag.full{background:rgba(70,201,138,.13);border-color:transparent;color:var(--path)}
+  .tag.speed{background:rgba(244,208,63,.13);border-color:transparent;color:var(--flag)}
+  .tag.putt{background:rgba(242,235,218,.08);color:var(--ink)}
+  .tag.score{background:rgba(224,106,92,.14);border-color:transparent;color:var(--red)}
+  button.tag{width:auto;font:inherit;cursor:pointer}
 
   /* Section heads */
   .sect{font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--sage);margin:26px 2px 12px}
   .sect:first-child{margin-top:4px}
 
-  /* Buttons */
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
-    padding:9px 12px;border-radius:11px;border:1px solid var(--line);
-    background:var(--panel-hi);color:var(--ink);font-weight:600;font-size:13px;
-    transition:transform .04s ease,background .15s,border-color .15s}
-  .btn:active{transform:scale(.96)}
-  .btn.primary{background:var(--flag);border-color:var(--flag);color:#1a1500}
-  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
-  .btn.sm{width:auto;padding:5px 10px;font-size:13px}
-  .btn[disabled]{opacity:.45;pointer-events:none}
+  button[disabled]{opacity:.45;pointer-events:none}
 
   /* Segmented control */
   .seg{display:inline-flex;width:100%;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-bottom:13px}
@@ -145,7 +121,7 @@
 
   /* Tally tap buttons */
   .taps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
-  .tap{background:var(--felt-deep);border:1px solid var(--line);border-radius:11px;padding:14px 10px;text-align:left}
+  .tap{width:100%;text-align:left;background:var(--felt-deep);border:1px solid var(--line);border-radius:11px;padding:14px 10px}
   .tap .tn{font-family:var(--mono);font-size:26px;font-weight:700;line-height:1}
   .tap .tl{font-size:12px;color:var(--ink-dim);margin-top:4px}
   .tap.pure{border-color:rgba(70,201,138,.5)} .tap.pure .tn{color:var(--path)}
@@ -177,7 +153,7 @@
 
   /* Stars */
   .stars{display:flex;gap:8px;margin-top:6px}
-  .stars button{font-size:26px;color:var(--line);line-height:1}
+  .stars button{font-size:26px;color:var(--line);line-height:1;background:none;border:none;padding:0;width:auto}
   .stars button.on{color:var(--flag)}
 
   /* Plan */
@@ -249,7 +225,7 @@
   .steptrack .big{font-family:var(--mono);font-size:32px;font-weight:600;text-align:center;margin:6px 0 10px;letter-spacing:-.02em}
   .steptrack .big.ok{color:var(--path)}
   .homebar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;margin-top:11px}
-  .homebar .btn.sm{flex:1;min-width:120px}
+  .homebar button.sm{flex:1;min-width:120px}
   .todayok{color:var(--path);font-size:13px;margin-top:10px}
 
   @keyframes pgin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -261,7 +237,7 @@
   }
 
   @media print{
-    nav,header,.cue .dot,.btn,.seg{display:none!important}
+    nav,header,.cue .dot,button,.seg{display:none!important}
     body{background:#fff;color:#111;padding:0}
     .app{max-width:none}
     .card,.metric{border-color:#ccc;background:#fff}
@@ -285,7 +261,6 @@
       </svg>
       <div class="wm"><span>Practice</span><b>IQ</b></div>
     </div>
-    <div class="suite">GolfIQ suite</div>
   </header>
 
   <main class="wrap" id="view"></main>
@@ -661,17 +636,17 @@ function renderToday(){
   html+=`<div class="sect">Home practice</div><div class="card">`;
   if(todayHome){
     html+=`<div class="todayok">\u2713 Logged today \u2014 ${homeSummary(todayHome)}</div>
-      <button class="btn ghost sm" style="margin-top:12px" onclick="startHomeRoutine('${todayHome.mode}',false)">Log another</button>`;
+      <button class="ghost sm" style="margin-top:12px" onclick="startHomeRoutine('${todayHome.mode}',false)">Log another</button>`;
   } else if(HOME_DRAFT){
     html+=`<div class="muted small" style="margin-bottom:12px">Draft in progress \u2014 ${HOME_DRAFT.mode} \u00b7 step ${HOME_DRAFT.focusIdx+1}</div>
-      <button class="btn primary" onclick="go('practice','home')">Resume session</button>`;
+      <button class="primary block" onclick="go('practice','home')">Resume session</button>`;
   } else {
     const mode=np&&np.mode==="extended"?"extended":"daily";
     html+=`<div class="muted small" style="margin-bottom:12px">${np?`Day ${np.d}: ${esc(np.focus)}`:"Pick a routine and work through it step by step."}</div>
       <div class="homebar">
-        <button class="btn primary" onclick="startHomeRoutine('${mode}',true)">Start focus mode</button>
-        <button class="btn ghost sm" onclick="startHomeRoutine('daily',false)">Daily</button>
-        <button class="btn ghost sm" onclick="startHomeRoutine('extended',false)">Extended</button>
+        <button class="primary block" onclick="startHomeRoutine('${mode}',true)">Start focus mode</button>
+        <button class="ghost sm" onclick="startHomeRoutine('daily',false)">Daily</button>
+        <button class="ghost sm" onclick="startHomeRoutine('extended',false)">Extended</button>
       </div>`;
   }
   html+=`</div>`;
@@ -681,20 +656,20 @@ function renderToday(){
     <div class="card"><div class="row"><div class="g">
       <div class="t">Fat ${rm.fatPer70} per 70 \u00b7 ${rm.ballFirst}% ball-first</div>
       <div class="d">${fmtDate(latestRg.date)} \u00b7 grade ${gradeLetter(rm.grade)}</div>
-    </div><div class="pill">${rm.fatPer70<2?"on target":"tracking"}</div></div></div>`;
+    </div><div class="tag">${rm.fatPer70<2?"on target":"tracking"}</div></div></div>`;
   }
 
   if(np){
     html+=`<div class="sect">Plan \u2014 Day ${np.d}</div>
     <div class="card">
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${pillFor(np)}</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${tagFor(np)}</div>
       <div class="t" style="font-weight:600;font-size:16px;margin-top:9px">${esc(np.focus)}</div>
       <div class="d" style="margin-top:5px;font-size:13px;color:var(--dim)">${esc(np.note)}</div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-        <button class="btn primary sm" onclick="startHomeRoutine('${np.mode}',true)">${np.mode==="extended"?"Extended routine":"Daily routine"}</button>
-        ${np.range?`<button class="btn ghost sm" onclick="go('practice','range')">Range</button>`:""}
-        ${np.speed?`<button class="btn ghost sm" onclick="go('practice','speed')">Speed</button>`:""}
-        ${np.round?`<button class="btn ghost sm" onclick="go('rounds')">Round</button>`:""}
+        <button class="primary sm" onclick="startHomeRoutine('${np.mode}',true)">${np.mode==="extended"?"Extended routine":"Daily routine"}</button>
+        ${np.range?`<button class="ghost sm" onclick="go('practice','range')">Range</button>`:""}
+        ${np.speed?`<button class="ghost sm" onclick="go('practice','speed')">Speed</button>`:""}
+        ${np.round?`<button class="ghost sm" onclick="go('rounds')">Round</button>`:""}
       </div>
     </div>`;
   } else {
@@ -716,8 +691,8 @@ function cueHTML(){
   if(CUE_EDITING){
     body=`<input class="cue-input" id="cueInput" type="text" maxlength="120" value="${txt}" placeholder="One swing thought"
       onkeydown="if(event.key==='Enter')saveCueText();if(event.key==='Escape')cancelCueEdit()">
-      <div class="cue-actions"><button type="button" class="btn primary sm" onclick="saveCueText()">Save</button>
-      <button type="button" class="btn ghost sm" onclick="cancelCueEdit()">Cancel</button></div>`;
+      <div class="cue-actions"><button type="button" class="primary sm" onclick="saveCueText()">Save</button>
+      <button type="button" class="ghost sm" onclick="cancelCueEdit()">Cancel</button></div>`;
   }else{
     body=`<b class="cue-txt" onclick="startCueEdit()">${txt}</b>
       <button type="button" class="cue-link" onclick="startCueEdit()">Edit</button>`;
@@ -727,13 +702,13 @@ function cueHTML(){
       <button type="button" class="cue-sw on" onclick="toggleCueShow()" aria-label="Hide swing thought" aria-pressed="true"><i></i></button></div>
     ${body}</div></div>`;
 }
-function pillFor(p){
+function tagFor(p){
   const map={full:["full","Full swing"],speed:["speed","Speed"],putt:["putt","Putting"],score:["score","Scoring"]};
-  let out=`<span class="pill ${map[p.pillar][0]}">${map[p.pillar][1]}</span>`;
-  if(p.range)out+=`<span class="pill">Range 70</span>`;
-  if(p.speed)out+=`<span class="pill">Skillz</span>`;
-  if(p.round)out+=`<span class="pill">Play 9</span>`;
-  if(p.checkpoint)out+=`<span class="pill" style="color:var(--yellow);border-color:rgba(244,208,63,.4)">Checkpoint</span>`;
+  let out=`<span class="tag ${map[p.pillar][0]}">${map[p.pillar][1]}</span>`;
+  if(p.range)out+=`<span class="tag">Range 70</span>`;
+  if(p.speed)out+=`<span class="tag">Skillz</span>`;
+  if(p.round)out+=`<span class="tag">Play 9</span>`;
+  if(p.checkpoint)out+=`<span class="tag" style="color:var(--yellow);border-color:rgba(244,208,63,.4)">Checkpoint</span>`;
   return out;
 }
 function rowFor(r){
@@ -745,7 +720,7 @@ function rowFor(r){
   else if(r.type==="round"){title=`Round \u00b7 ${r.score}`;detail=`${r.doubles} dbl+ \u00b7 ${r.threePutts} 3-putts`;}
   else if(r.type==="redflag"){title=`Flagged: ${r.flag}`;detail="Reversion noted";}
   return `<div class="row"><div class="g"><div class="t">${esc(title)}</div><div class="d">${esc(detail)}</div></div>
-    <div style="text-align:right"><div class="pill">${fmtDate(r.date)}</div></div></div>`;
+    <div style="text-align:right"><div class="tag">${fmtDate(r.date)}</div></div></div>`;
 }
 
 /* ============================ RENDER: PRACTICE ============================ */
@@ -909,11 +884,11 @@ function homeFinishHTML(){
     <div class="stars">${[1,2,3,4,5].map(n=>`<button class="${HOME_DRAFT.adherence>=n?'on':''}" onclick="setHomeStars(${n})">\u2605</button>`).join("")}</div>
     <label class="f">Red flag felt?</label>
     <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px">
-      ${RED_FLAGS.map(f=>`<button class="pill ${HOME_DRAFT.flags.includes(f.t)?'score':''}" style="cursor:pointer;border-style:solid" onclick="homeFlag('${esc(f.t).replace(/'/g,"\\'")}')">${esc(f.t)}</button>`).join("")}
+      ${RED_FLAGS.map(f=>`<button class="tag ${HOME_DRAFT.flags.includes(f.t)?'score':''}" style="cursor:pointer;border-style:solid" onclick="homeFlag('${esc(f.t).replace(/'/g,"\\'")}')">${esc(f.t)}</button>`).join("")}
     </div>
     <label class="f">Note (optional)</label>
     <textarea placeholder="What felt good? Any red flag creeping in?" oninput="HOME_DRAFT.note=this.value;persistHomeDraft()">${esc(HOME_DRAFT.note||"")}</textarea>
-    <div style="margin-top:16px"><button class="btn primary" onclick="saveHome()">Save home session</button></div>`;
+    <div style="margin-top:16px"><button class="primary block" onclick="saveHome()">Save home session</button></div>`;
 }
 
 function homeFocusForm(){
@@ -921,7 +896,7 @@ function homeFocusForm(){
   const pct=Math.round((i+1)/R.steps.length*100);
   let h=`<div class="focusprog"><i style="width:${pct}%"></i></div>
     <div class="focushdr"><span class="fn">Step ${i+1} of ${R.steps.length}</span>
-      <button class="btn ghost sm" onclick="setHomeView('list')">All steps</button></div>
+      <button class="ghost sm" onclick="setHomeView('list')">All steps</button></div>
     <div class="card">
       <div class="sp">${esc(s.p)} \u00b7 ${s.m} min</div>
       ${cueVisible()?`<div class="mono small" style="color:var(--yellow);margin:8px 0 2px">${esc(swingThoughtText())}</div>`:""}
@@ -929,16 +904,16 @@ function homeFocusForm(){
       <div class="sd" style="margin-top:8px">${esc(s.d)}</div>
       <div class="timer ${HOME_DRAFT.timerSec<=30?'warn':''}" id="homeTimer">${homeTimerLabel()}</div>
       <div class="homebar" style="margin-bottom:0">
-        <button class="btn ghost sm" onclick="startHomeTimer()">Start</button>
-        <button class="btn ghost sm" onclick="pauseHomeTimer()">Pause</button>
-        <button class="btn ghost sm" onclick="resetHomeTimer()">Reset</button>
+        <button class="ghost sm" onclick="startHomeTimer()">Start</button>
+        <button class="ghost sm" onclick="pauseHomeTimer()">Pause</button>
+        <button class="ghost sm" onclick="resetHomeTimer()">Reset</button>
       </div>
       ${homeTrackHTML(s,d,i,true)}
     </div>
     <div class="homebar" style="margin-top:14px">
-      ${i>0?`<button class="btn ghost sm" onclick="setHomeFocus(${i-1})">Back</button>`:"<span></span>"}
-      ${i<R.steps.length-1?`<button class="btn primary" onclick="homeStepDone(${i},true)">Done \u2014 next</button>`
-        :`<button class="btn primary" onclick="homeStepDone(${i},false);setHomeView('list')">Done \u2014 finish</button>`}
+      ${i>0?`<button class="ghost sm" onclick="setHomeFocus(${i-1})">Back</button>`:"<span></span>"}
+      ${i<R.steps.length-1?`<button class="primary block" onclick="homeStepDone(${i},true)">Done \u2014 next</button>`
+        :`<button class="primary block" onclick="homeStepDone(${i},false);setHomeView('list')">Done \u2014 finish</button>`}
     </div>`;
   if(i===R.steps.length-1)h+=`<div style="margin-top:18px">${homeFinishHTML()}</div>`;
   return h;
@@ -951,8 +926,8 @@ function homeListForm(){
      <button class="${HOME_DRAFT.mode==='extended'?'on':''}" onclick="setHomeMode('extended')">Extended \u00b7 20\u201325</button>
    </div>
    <div class="homebar">
-     <button class="btn primary sm" onclick="setHomeView('focus')">Focus mode</button>
-     <button class="btn ghost sm" onclick="discardHomeDraft()">Discard draft</button>
+     <button class="primary sm" onclick="setHomeView('focus')">Focus mode</button>
+     <button class="ghost sm" onclick="discardHomeDraft()">Discard draft</button>
    </div>
    <div class="card">`;
   h+=R.steps.map((s,i)=>{const d=HOME_DRAFT.stepData[i], ml=stepMetricLine(s,d);
@@ -1032,7 +1007,7 @@ function rangeForm(){
   const m=rangeMetrics({size:D.size,tally:D.tally,low:D.low});
   let h=`<div class="card" style="margin-bottom:14px">
     <div class="eyebrow">Session plan \u00b7 70 balls</div>`;
-  h+=RANGE_PLAN.map(b=>`<div class="row"><div class="g"><div class="t">${esc(b.t)}</div><div class="d">${esc(b.d)}</div></div><div class="pill">${b.n}</div></div>`).join("");
+  h+=RANGE_PLAN.map(b=>`<div class="row"><div class="g"><div class="t">${esc(b.t)}</div><div class="d">${esc(b.d)}</div></div><div class="tag">${b.n}</div></div>`).join("");
   h+=`</div>
    <label class="f">Session size</label>
    <div class="seg" style="margin-top:0">${[50,70,100].map(s=>`<button class="${D.size===s?'on':''}" onclick="RANGE_DRAFT.size=${s};renderPracticeSub()">${s}</button>`).join("")}</div>
@@ -1048,7 +1023,7 @@ function rangeForm(){
        <button class="tap" onclick="rngTally('mishit',1)"><div class="tn">${D.tally.mishit}</div><div class="tl">Other mishit</div></button>
      </div>
      <div style="display:flex;gap:8px;margin-top:10px">
-       <button class="btn ghost sm" onclick="rngUndo()">Undo last</button>
+       <button class="ghost sm" onclick="rngUndo()">Undo last</button>
        <div style="flex:1"></div>
        <div class="mono small" style="align-self:center;color:var(--dim)">Grade <b style="color:var(--ivory)">${total?gradeLetter(m.grade):"\u2014"}</b> \u00b7 ${m.ballFirst}% ball-first</div>
      </div>
@@ -1065,11 +1040,11 @@ function rangeForm(){
 
    <label class="f">Red flag felt this session?</label>
    <div style="display:flex;flex-wrap:wrap;gap:7px">
-     ${RED_FLAGS.map(f=>`<button class="pill ${D.flags.includes(f.t)?'score':''}" style="cursor:pointer;border-style:solid" onclick="rngFlag('${esc(f.t).replace(/'/g,"\\'")}')">${esc(f.t)}</button>`).join("")}
+     ${RED_FLAGS.map(f=>`<button class="tag ${D.flags.includes(f.t)?'score':''}" style="cursor:pointer;border-style:solid" onclick="rngFlag('${esc(f.t).replace(/'/g,"\\'")}')">${esc(f.t)}</button>`).join("")}
    </div>
    <label class="f">Note</label>
    <textarea placeholder="Clubs, conditions, what you worked on" oninput="RANGE_DRAFT.note=this.value">${esc(D.note)}</textarea>
-   <div style="margin-top:16px"><button class="btn primary" onclick="saveRange()" ${total?"":"disabled"}>Save session</button></div>`;
+   <div style="margin-top:16px"><button class="primary block" onclick="saveRange()" ${total?"":"disabled"}>Save session</button></div>`;
   return h;
 }
 function rngTally(k,n){RANGE_DRAFT.tally[k]=Math.max(0,RANGE_DRAFT.tally[k]+n);RANGE_DRAFT._last=k;renderPracticeSub();}
@@ -1101,7 +1076,7 @@ function speedForm(){
   </label>
   <label class="f">Note</label>
   <textarea id="spNote" placeholder="How did it feel? Did speed cost you sequence?"></textarea>
-  <div style="margin-top:16px"><button class="btn primary" onclick="saveSpeed()">Save speed session</button></div>`;
+  <div style="margin-top:16px"><button class="primary block" onclick="saveSpeed()">Save speed session</button></div>`;
   return h;
 }
 async function saveSpeed(){
@@ -1125,7 +1100,7 @@ function puttForm(){
       <input type="number" inputmode="numeric" id="lga" placeholder="Attempts"></div></div></div>
    <label class="f">Note</label>
    <textarea id="ptNote" placeholder="Stroke feel, pace, routine"></textarea>
-   <div style="margin-top:16px"><button class="btn primary" onclick="savePutt()">Save putting session</button></div>`;
+   <div style="margin-top:16px"><button class="primary block" onclick="savePutt()">Save putting session</button></div>`;
   return h;
 }
 async function savePutt(){
@@ -1165,14 +1140,14 @@ function renderRounds(){
     <label class="f">What sequenced well?</label><textarea id="rdGood" placeholder="When did your swing thought show up?"></textarea>
     <label class="f">Where did you revert? (which red flag)</label><textarea id="rdBad" placeholder="The miss pattern that cost you"></textarea>
     <label class="f">One thing for next round</label><textarea id="rdNext" placeholder="Single focus"></textarea>
-    <div style="margin-top:16px"><button class="btn primary" onclick="saveRound()">Save round</button></div>
+    <div style="margin-top:16px"><button class="primary block" onclick="saveRound()">Save round</button></div>
   </div>`;
   h+=`<div class="sect">History</div><div class="card">`;
   if(!rounds.length)h+=`<div class="empty">No rounds yet. Log one after you play.</div>`;
   else h+=rounds.map(r=>{const ud=r.udAtt?Math.round(r.udConv/r.udAtt*100)+"% U&D":"";
     return `<div class="row"><div class="g"><div class="t">Score ${r.score} \u00b7 ${fmtDate(r.date)}</div>
       <div class="d">${r.doubles} dbl+ \u00b7 ${r.threePutts} 3-putts${ud?" \u00b7 "+ud:""}${r.next?" \u00b7 next: "+esc(r.next):""}</div></div>
-      <button class="pill" style="cursor:pointer" onclick="delRec('${r.id}')">Delete</button></div>`;}).join("");
+      <button class="tag" style="cursor:pointer" onclick="delRec('${r.id}')">Delete</button></div>`;}).join("");
   h+=`</div>`;
   view.innerHTML=h;
 }
@@ -1202,7 +1177,7 @@ function renderPlan(){
       <div class="chk ${dn?'on':''}" style="margin-top:1px">${check}</div>
       <div class="dn">D${p.d}</div>
       <div style="flex:1"><div class="pt">${esc(p.focus)}</div><div class="pd">${esc(p.note)}</div>
-        <div class="tags">${pillFor(p)}</div></div>
+        <div class="tags">${tagFor(p)}</div></div>
     </div>`;
   });
   h+=`</div>`;
@@ -1253,8 +1228,8 @@ function renderMore(){
       <button type="button" class="cue-sw ${cueVisible()?"on":""}" onclick="toggleCueShow()" aria-pressed="${cueVisible()}"><i></i></button>
     </div>
     <div class="homebar" style="margin-top:14px">
-      <button type="button" class="btn primary sm" onclick="saveMoreCueText()">Save</button>
-      <button type="button" class="btn ghost sm" onclick="resetCueText()">Reset default</button>
+      <button type="button" class="primary sm" onclick="saveMoreCueText()">Save</button>
+      <button type="button" class="ghost sm" onclick="resetCueText()">Reset default</button>
     </div>
     <div class="small muted" style="margin-top:10px">Tap the banner to edit quickly when shown. Home sessions save which thought you used.</div>
   </div>`;
@@ -1266,7 +1241,7 @@ function renderMore(){
   h+=`<details class="ref"><summary>Swing red flags<span class="x">+</span></summary>
     <div class="body"><div class="small muted" style="margin-bottom:6px">When a miss shows up, name it \u2014 then log it so the pattern shows on your dashboard.</div>
     ${RED_FLAGS.map(f=>`<div class="flag"><div class="fx"></div><div style="flex:1"><div class="ft">${esc(f.t)}</div><div class="fd">${esc(f.d)}</div><div class="fc">${esc(f.c)}</div></div>
-      <button class="pill" style="cursor:pointer;align-self:center" onclick="logFlag('${esc(f.t).replace(/'/g,"\\'")}')">Felt it</button></div>`).join("")}
+      <button class="tag" style="cursor:pointer;align-self:center" onclick="logFlag('${esc(f.t).replace(/'/g,"\\'")}')">Felt it</button></div>`).join("")}
     </div></details>`;
   h+=`<details class="ref"><summary>Daily &amp; extended routines<span class="x">+</span></summary>
     <div class="body">${[ROUTINE_DAILY,ROUTINE_EXT].map(R=>`<div class="eyebrow" style="margin:4px 0 6px;color:var(--yellow)">${R.name} \u00b7 ${R.time}</div>
@@ -1275,17 +1250,17 @@ function renderMore(){
   // Printable journal
   h+=`<div class="sect">One-page journal</div>
    <div class="card">${journalHTML()}</div>
-   <button class="btn ghost" style="margin-top:12px" onclick="window.print()">Print / save as PDF</button>`;
+   <button class="ghost block" style="margin-top:12px" onclick="window.print()">Print / save as PDF</button>`;
 
   // Data
   h+=`<div class="sect">Data</div><div class="card">
     <div class="small muted" style="margin-bottom:12px">iOS can clear an unused web app\u2019s storage. Export after big sessions \u2014 it\u2019s your real backup.</div>
-    <button class="btn ghost" onclick="exportData()">Export backup (JSON)</button>
+    <button class="ghost block" onclick="exportData()">Export backup (JSON)</button>
     <div style="height:10px"></div>
-    <button class="btn ghost" onclick="document.getElementById('importFile').click()">Import backup</button>
+    <button class="ghost block" onclick="document.getElementById('importFile').click()">Import backup</button>
     <input type="file" id="importFile" accept="application/json" class="hide" onchange="importData(this)">
     <div style="height:10px"></div>
-    <button class="btn ghost" style="color:var(--red);border-color:var(--red)" onclick="resetData()">Reset all data</button>
+    <button class="danger block" onclick="resetData()">Reset all data</button>
   </div>
   <div class="small muted" style="text-align:center;margin-top:18px">PracticeIQ \u00b7 GolfIQ suite \u00b7 local-first, offline-ready</div>`;
   view.innerHTML=h;
